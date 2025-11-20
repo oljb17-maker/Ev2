@@ -105,14 +105,6 @@
       color: var(--text);
       font-size: 13px;
     }
-    .vehicle-bar button {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      font-size: 12px;
-    }
     .tabs {
       margin-top: 14px;
       display: flex;
@@ -265,8 +257,7 @@
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
-    /* ================= SPLASH SCREEN ================= */
-
+    /* SPLASH */
     .splash-screen {
       position: fixed;
       inset: 0;
@@ -283,9 +274,7 @@
       transform: scale(0.98);
       pointer-events: none;
     }
-    .splash-inner {
-      text-align: center;
-    }
+    .splash-inner { text-align: center; }
     .splash-logo {
       font-size: 24px;
       font-weight: 700;
@@ -330,23 +319,19 @@
       #importFile {
         display: none !important;
       }
-      body {
-        background: #ffffff;
-      }
+      body { background: #ffffff; }
       .app {
         max-width: 100%;
         padding: 0;
         opacity: 1 !important;
       }
-      .card {
-        border-radius: 0;
-      }
+      .card { border-radius: 0; }
     }
   </style>
 </head>
 <body>
 
-<!-- SPLASH SCREEN -->
+<!-- SPLASH -->
 <div id="splash" class="splash-screen">
   <div class="splash-inner">
     <div class="splash-logo">EV LOGBOOK</div>
@@ -354,7 +339,7 @@
     <div class="splash-bar">
       <div class="splash-bar-fill"></div>
     </div>
-    <div class="splash-tip">Loading battery data…</div>
+    <div class="splash-tip" id="splashTip">Loading battery data…</div>
   </div>
 </div>
 
@@ -379,7 +364,6 @@
 
   <div class="vehicle-bar">
     <select id="vehicleSelect"></select>
-    <button id="newVehicleBtn">+ Vehículo</button>
   </div>
 
   <nav class="tabs">
@@ -403,7 +387,7 @@
             <div class="stat-value" id="stat-consumption">–</div>
           </div>
           <div class="stat">
-            <div class="stat-label" id="t_cost_label">Costo / 100 km</div>
+            <div class="stat-label" id="t_cost_label">Costo / 100</div>
             <div class="stat-value" id="stat-cost">–</div>
           </div>
           <div class="stat">
@@ -442,7 +426,7 @@
           <canvas id="consumptionChart"></canvas>
         </div>
         <p class="hint" id="t_chart_hint">
-          Consumo (kWh/100 km) de las últimas cargas del vehículo seleccionado.
+          Consumo (kWh/100 mi) de las últimas cargas del vehículo seleccionado.
         </p>
       </div>
     </section>
@@ -470,12 +454,12 @@
             <input type="number" step="0.01" id="cost" required />
           </div>
           <div class="field">
-            <label id="t_distance_label">Distancia desde la última carga (km)</label>
+            <label id="t_distance_label">Distancia desde la última carga (mi)</label>
             <input type="number" step="0.1" id="km" required />
           </div>
           <div class="field">
             <label id="t_notes_label">Notas (opcional)</label>
-            <input type="text" id="notes" placeholder="EA - 150 kW, clima frío…" />
+            <input type="text" id="notes" />
           </div>
           <button type="submit" class="primary" id="t_save_charge_btn">Guardar carga</button>
         </form>
@@ -498,25 +482,26 @@
           </div>
           <div class="field">
             <label id="t_brand_label">Marca</label>
-            <input type="text" id="brand" placeholder="Hyundai" />
+            <input type="text" id="brand" />
           </div>
           <div class="field">
             <label id="t_model_label">Modelo</label>
-            <input type="text" id="model" placeholder="Ioniq 5" />
+            <input type="text" id="model" />
           </div>
           <div class="field">
             <label id="t_year_label">Año</label>
-            <input type="number" id="year" placeholder="2023" />
+            <input type="number" id="year" />
           </div>
           <div class="field">
             <label id="t_usable_label">Capacidad usable (kWh)</label>
-            <input type="number" step="0.1" id="usableKwh" placeholder="72.6" />
+            <input type="number" step="0.1" id="usableKwh" />
           </div>
           <div class="field">
             <label id="t_rated_label">Consumo de ficha (kWh/100 km)</label>
-            <input type="number" step="0.1" id="ratedConsumption" placeholder="17.0" />
+            <input type="number" step="0.1" id="ratedConsumption" />
           </div>
           <button type="submit" class="primary" id="t_save_vehicle_btn">Guardar vehículo</button>
+          <button type="button" class="secondary-btn" id="newVehicleInFormBtn">Nuevo vehículo</button>
         </form>
       </div>
 
@@ -533,22 +518,45 @@
 </div>
 
 <script>
-const STORAGE_KEY = "evlogbook-kairos-v4";
+const STORAGE_KEY = "evlogbook-kairos-v5";
 const KM_PER_MI = 1.60934;
 
 let state = {
   theme: "dark",
   lang: "es",
-  unit: "km",
+  unit: "mi",   // 🔸 por defecto millas
   vehicles: [],
   activeVehicleId: null,
   chargesByVehicle: {}
 };
 
+// Vehículos iniciales (solo se cargan si no hay nada en localStorage)
+function seedDefaultVehicles() {
+  if (state.vehicles.length) return;
+
+  const defaults = [
+    { id:"lucie", alias:"Lucie", brand:"Hyundai", model:"Ioniq 5 SEL AWD", year:"2023", usableKwh:"72.6", ratedConsumption:"17.0" },
+    { id:"tesla-m3lr", alias:"Model 3 LR", brand:"Tesla", model:"Model 3 Long Range", year:"2023", usableKwh:"75", ratedConsumption:"15.5" },
+    { id:"tesla-my", alias:"Model Y LR", brand:"Tesla", model:"Model Y Long Range", year:"2023", usableKwh:"75", ratedConsumption:"16.9" },
+    { id:"rivian-r1t", alias:"R1T Large Pack", brand:"Rivian", model:"R1T", year:"2023", usableKwh:"135", ratedConsumption:"25" },
+    { id:"kia-ev6", alias:"EV6 Wind", brand:"Kia", model:"EV6 Wind RWD", year:"2023", usableKwh:"72.5", ratedConsumption:"16.5" },
+    { id:"kona-ev", alias:"Kona EV", brand:"Hyundai", model:"Kona Electric 64kWh", year:"2022", usableKwh:"64", ratedConsumption:"14.7" },
+    { id:"bmw-i4", alias:"i4 eDrive40", brand:"BMW", model:"i4 eDrive40", year:"2023", usableKwh:"80.7", ratedConsumption:"18.0" },
+    { id:"merc-eqe", alias:"EQE 350+", brand:"Mercedes-Benz", model:"EQE 350+", year:"2023", usableKwh:"90.6", ratedConsumption:"19.0" }
+  ];
+
+  state.vehicles = defaults;
+  defaults.forEach(v => { state.chargesByVehicle[v.id] = []; });
+  state.activeVehicleId = defaults[0].id;
+}
+
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
+    if (!raw) {
+      seedDefaultVehicles();
+      return;
+    }
     const data = JSON.parse(raw);
     state = Object.assign(state, data);
     Object.keys(state.chargesByVehicle || {}).forEach(id => {
@@ -586,6 +594,7 @@ const i18n = {
   es: {
     app_name: "EV Logbook",
     subtitle: "Kairos Edition",
+    splash_tip: "Cargando datos de batería…",
     tab_dashboard: "Dashboard",
     tab_charges: "Cargas",
     tab_vehicle: "Vehículo",
@@ -614,6 +623,7 @@ const i18n = {
     distance_label_km: "Distancia desde la última carga (km)",
     distance_label_mi: "Distancia desde la última carga (mi)",
     notes_label: "Notas (opcional)",
+    notes_placeholder: "EA, clima frío, autopista, etc.",
     history_title: "Historial de cargas",
     vehicle_data_title: "Datos del vehículo",
     alias_label: "Nombre / Alias",
@@ -624,6 +634,7 @@ const i18n = {
     rated_label_km: "Consumo de ficha (kWh/100 km)",
     rated_label_mi: "Consumo de ficha (kWh/100 mi)",
     save_vehicle_btn: "Guardar vehículo",
+    new_vehicle_btn: "Nuevo vehículo",
     backup_title: "Copias de seguridad",
     backup_hint: "Exporta un archivo JSON y guárdalo en la nube. Para restaurar, selecciónalo nuevamente aquí.",
     export_backup_btn: "Exportar backup (JSON)",
@@ -632,8 +643,7 @@ const i18n = {
     hint_create_vehicle_first: "Primero crea un vehículo en la pestaña “Vehículo”.",
     hint_charges_for: name => `Guardando cargas para: ${name}`,
     print_btn: "Imprimir / Exportar PDF",
-    new_vehicle_btn: "+ Vehículo",
-    vehicle_select_placeholder: "Sin vehículos — crea uno",
+    vehicle_select_placeholder: "Selecciona un vehículo",
     alert_vehicle_min: "Coloca al menos un alias o marca/modelo.",
     alert_vehicle_saved: "Vehículo guardado.",
     alert_check_numbers: "Revisa los campos numéricos.",
@@ -645,6 +655,7 @@ const i18n = {
   en: {
     app_name: "EV Logbook",
     subtitle: "Kairos Edition",
+    splash_tip: "Loading battery data…",
     tab_dashboard: "Dashboard",
     tab_charges: "Charges",
     tab_vehicle: "Vehicle",
@@ -673,6 +684,7 @@ const i18n = {
     distance_label_km: "Distance since last charge (km)",
     distance_label_mi: "Distance since last charge (mi)",
     notes_label: "Notes (optional)",
+    notes_placeholder: "EA, cold weather, highway, etc.",
     history_title: "Charge history",
     vehicle_data_title: "Vehicle data",
     alias_label: "Name / Alias",
@@ -683,6 +695,7 @@ const i18n = {
     rated_label_km: "Rated consumption (kWh/100 km)",
     rated_label_mi: "Rated consumption (kWh/100 mi)",
     save_vehicle_btn: "Save vehicle",
+    new_vehicle_btn: "New vehicle",
     backup_title: "Backups",
     backup_hint: "Export a JSON file and store it safely. To restore, select it again here.",
     export_backup_btn: "Export backup (JSON)",
@@ -691,8 +704,7 @@ const i18n = {
     hint_create_vehicle_first: "Create a vehicle in the “Vehicle” tab first.",
     hint_charges_for: name => `Logging charges for: ${name}`,
     print_btn: "Print / Export PDF",
-    new_vehicle_btn: "+ Vehicle",
-    vehicle_select_placeholder: "No vehicles — create one",
+    vehicle_select_placeholder: "Select a vehicle",
     alert_vehicle_min: "Enter at least an alias or brand/model.",
     alert_vehicle_saved: "Vehicle saved.",
     alert_check_numbers: "Please check the numeric fields.",
@@ -714,7 +726,6 @@ const langSelect = document.getElementById("langSelect");
 const unitSelect = document.getElementById("unitSelect");
 const themeToggle = document.getElementById("themeToggle");
 const vehicleSelect = document.getElementById("vehicleSelect");
-const newVehicleBtn = document.getElementById("newVehicleBtn");
 const tabButtons = document.querySelectorAll(".tab");
 const panels = document.querySelectorAll(".tab-panel");
 const statRange = document.getElementById("stat-range");
@@ -730,9 +741,11 @@ const chargeForm = document.getElementById("charge-form");
 const chargesList = document.getElementById("charges-list");
 const chargeVehicleHint = document.getElementById("chargeVehicleHint");
 const vehicleForm = document.getElementById("vehicle-form");
+const newVehicleInFormBtn = document.getElementById("newVehicleInFormBtn");
 const exportBtn = document.getElementById("exportBtn");
 const importFile = document.getElementById("importFile");
 const printBtn = document.getElementById("printBtn");
+const splashTip = document.getElementById("splashTip");
 
 function applyTheme(theme) {
   state.theme = theme;
@@ -747,6 +760,7 @@ function applyTheme(theme) {
 function applyTranslations() {
   document.getElementById("t_app_name").textContent = t("app_name");
   document.getElementById("t_subtitle").textContent = t("subtitle");
+  splashTip.textContent = t("splash_tip");
   document.getElementById("tab_dashboard").textContent = t("tab_dashboard");
   document.getElementById("tab_charges").textContent = t("tab_charges");
   document.getElementById("tab_vehicle").textContent = t("tab_vehicle");
@@ -774,6 +788,7 @@ function applyTranslations() {
   document.getElementById("t_distance_label").textContent =
     state.unit === "km" ? t("distance_label_km") : t("distance_label_mi");
   document.getElementById("t_notes_label").textContent = t("notes_label");
+  document.getElementById("notes").placeholder = t("notes_placeholder");
   document.getElementById("t_save_charge_btn").textContent = t("save_charge_btn");
   document.getElementById("t_history_title").textContent = t("history_title");
   document.getElementById("t_vehicle_data_title").textContent = t("vehicle_data_title");
@@ -785,10 +800,10 @@ function applyTranslations() {
   document.getElementById("t_rated_label").textContent =
     state.unit === "km" ? t("rated_label_km") : t("rated_label_mi");
   document.getElementById("t_save_vehicle_btn").textContent = t("save_vehicle_btn");
+  newVehicleInFormBtn.textContent = t("new_vehicle_btn");
   document.getElementById("t_backup_title").textContent = t("backup_title");
   document.getElementById("t_backup_hint").textContent = t("backup_hint");
   exportBtn.textContent = t("export_backup_btn");
-  newVehicleBtn.textContent = t("new_vehicle_btn");
 }
 function renderVehicleSelect() {
   vehicleSelect.innerHTML = "";
@@ -1022,8 +1037,9 @@ vehicleSelect.addEventListener("change", () => {
   renderVehicleForm();
   renderChargesAndStats();
 });
-newVehicleBtn.addEventListener("click", () => {
+newVehicleInFormBtn.addEventListener("click", () => {
   state.activeVehicleId = null;
+  vehicleForm.reset();
   renderVehicleForm();
   renderChargesAndStats();
 });
@@ -1108,58 +1124,4 @@ importFile.addEventListener("change", e => {
       if (!data.vehicles || !data.chargesByVehicle) {
         alert(t("alert_backup_invalid"));
         return;
-      }
-      state = Object.assign(state, data);
-      saveState();
-      applyTheme(state.theme || "dark");
-      langSelect.value = state.lang || "es";
-      unitSelect.value = state.unit || "km";
-      applyTranslations();
-      renderVehicleSelect();
-      renderVehicleForm();
-      renderChargesAndStats();
-      alert(t("alert_backup_restored"));
-    } catch(err) {
-      alert(t("alert_backup_error"));
-    }
-  };
-  reader.readAsText(file);
-});
-printBtn.addEventListener("click", () => window.print());
-
-// INIT
-loadState();
-applyTheme(state.theme || "dark");
-langSelect.value = state.lang || "es";
-unitSelect.value = state.unit || "km";
-applyTranslations();
-renderVehicleSelect();
-renderVehicleForm();
-renderChargesAndStats();
-
-// SPLASH: ocultar cuando todo está listo
-const splashEl = document.getElementById("splash");
-const appRoot = document.querySelector(".app");
-setTimeout(() => {
-  if (splashEl) {
-    splashEl.classList.add("hide");
-    setTimeout(() => {
-      splashEl.style.display = "none";
-    }, 400);
-  }
-  if (appRoot) {
-    appRoot.classList.add("ready");
-  }
-}, 600);
-
-// REGISTRO SERVICE WORKER (PWA)
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("./service-worker.js")
-      .catch(err => console.log("SW error", err));
-  });
-}
-</script>
-</body>
-</html>
+     
