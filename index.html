@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EV Logbook – Kairos Edition</title>
+
+  <!-- PWA / Tema navegador -->
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
   <style>
     :root {
       --bg: radial-gradient(circle at top, #283341 0%, #05070b 80%);
@@ -40,6 +46,11 @@
       margin: 0 auto;
       padding: 14px;
       padding-bottom: 40px;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .app.ready {
+      opacity: 1;
     }
     header.app-header {
       display: flex;
@@ -253,6 +264,63 @@
     }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
+
+    /* ================= SPLASH SCREEN ================= */
+
+    .splash-screen {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, #1f2937 0%, #020617 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      color: #e5e7eb;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .splash-screen.hide {
+      opacity: 0;
+      transform: scale(0.98);
+      pointer-events: none;
+    }
+    .splash-inner {
+      text-align: center;
+    }
+    .splash-logo {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    .splash-sub {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+    .splash-bar {
+      width: 160px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.25);
+      overflow: hidden;
+      margin: 18px auto 8px;
+    }
+    .splash-bar-fill {
+      height: 100%;
+      width: 40%;
+      border-radius: 999px;
+      background: linear-gradient(90deg,#22c55e,#a3e635);
+      animation: splash-loading 1.2s infinite;
+    }
+    .splash-tip {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    @keyframes splash-loading {
+      0%   { transform: translateX(-80%); }
+      50%  { transform: translateX(10%); }
+      100% { transform: translateX(120%); }
+    }
+
     @media print {
       .tabs,
       .header-controls,
@@ -268,6 +336,7 @@
       .app {
         max-width: 100%;
         padding: 0;
+        opacity: 1 !important;
       }
       .card {
         border-radius: 0;
@@ -276,6 +345,19 @@
   </style>
 </head>
 <body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash" class="splash-screen">
+  <div class="splash-inner">
+    <div class="splash-logo">EV LOGBOOK</div>
+    <div class="splash-sub">Kairos Edition</div>
+    <div class="splash-bar">
+      <div class="splash-bar-fill"></div>
+    </div>
+    <div class="splash-tip">Loading battery data…</div>
+  </div>
+</div>
+
 <div class="app">
   <header class="app-header">
     <div class="app-title-block">
@@ -460,7 +542,6 @@ let state = {
   unit: "km",
   vehicles: [],
   activeVehicleId: null,
-  // siempre km internamente
   chargesByVehicle: {}
 };
 
@@ -470,7 +551,6 @@ function loadState() {
     if (!raw) return;
     const data = JSON.parse(raw);
     state = Object.assign(state, data);
-    // normalizar kmBase
     Object.keys(state.chargesByVehicle || {}).forEach(id => {
       state.chargesByVehicle[id] = (state.chargesByVehicle[id] || []).map(c => {
         if (typeof c.kmBase === "number") return c;
@@ -480,19 +560,15 @@ function loadState() {
     });
   } catch(e) { console.warn(e); }
 }
-
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
-
 function getActiveVehicle() {
   return state.vehicles.find(v => v.id === state.activeVehicleId) || null;
 }
 function getActiveCharges() {
   return state.chargesByVehicle[state.activeVehicleId] || [];
 }
-
-// conversiones
 function kmToCurrent(km) {
   return state.unit === "km" ? km : km / KM_PER_MI;
 }
@@ -500,13 +576,12 @@ function currentToKm(dist) {
   return state.unit === "km" ? dist : dist * KM_PER_MI;
 }
 function per100kmToUnit(v) {
-  return state.unit === "km" ? v : v * KM_PER_MI;      // kWh/100 mi
+  return state.unit === "km" ? v : v * KM_PER_MI;
 }
 function costPer100kmToUnit(v) {
-  return state.unit === "km" ? v : v * KM_PER_MI;      // costo/100 mi
+  return state.unit === "km" ? v : v * KM_PER_MI;
 }
 
-// i18n
 const i18n = {
   es: {
     app_name: "EV Logbook",
@@ -796,7 +871,6 @@ function drawChart(values) {
 function formatDate(d) {
   return new Date(d).toLocaleString();
 }
-
 function renderChargesAndStats() {
   updateChargeFormAvailability();
   const v = getActiveVehicle();
@@ -914,7 +988,7 @@ function renderChargesAndStats() {
   drawChart(chartVals.reverse());
 }
 
-// Eventos
+// Eventos UI
 tabButtons.forEach(btn => {
   btn.addEventListener("click", () => {
     tabButtons.forEach(b => b.classList.remove("active"));
@@ -1062,6 +1136,30 @@ applyTranslations();
 renderVehicleSelect();
 renderVehicleForm();
 renderChargesAndStats();
+
+// SPLASH: ocultar cuando todo está listo
+const splashEl = document.getElementById("splash");
+const appRoot = document.querySelector(".app");
+setTimeout(() => {
+  if (splashEl) {
+    splashEl.classList.add("hide");
+    setTimeout(() => {
+      splashEl.style.display = "none";
+    }, 400);
+  }
+  if (appRoot) {
+    appRoot.classList.add("ready");
+  }
+}, 600);
+
+// REGISTRO SERVICE WORKER (PWA)
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("./service-worker.js")
+      .catch(err => console.log("SW error", err));
+  });
+}
 </script>
 </body>
 </html>
