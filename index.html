@@ -1124,4 +1124,62 @@ importFile.addEventListener("change", e => {
       if (!data.vehicles || !data.chargesByVehicle) {
         alert(t("alert_backup_invalid"));
         return;
-     
+           if (!data.vehicles || !data.chargesByVehicle) {
+        alert(t("alert_backup_invalid"));
+        return;
+      }
+      state = Object.assign(state, data);
+      saveState();
+      applyTheme(state.theme || "dark");
+      langSelect.value = state.lang || "es";
+      unitSelect.value = state.unit || "mi";
+      applyTranslations();
+      renderVehicleSelect();
+      renderVehicleForm();
+      renderChargesAndStats();
+      alert(t("alert_backup_restored"));
+    } catch(err) {
+      alert(t("alert_backup_error"));
+    }
+  };
+  reader.readAsText(file);
+});
+
+printBtn.addEventListener("click", () => window.print());
+
+// INIT
+loadState();
+applyTheme(state.theme || "dark");
+langSelect.value = state.lang || "es";
+unitSelect.value = state.unit || "mi";
+applyTranslations();
+renderVehicleSelect();
+renderVehicleForm();
+renderChargesAndStats();
+
+// SPLASH
+const splashEl = document.getElementById("splash");
+const appRoot = document.querySelector(".app");
+setTimeout(() => {
+  if (splashEl) {
+    splashEl.classList.add("hide");
+    setTimeout(() => {
+      splashEl.style.display = "none";
+    }, 400);
+  }
+  if (appRoot) {
+    appRoot.classList.add("ready");
+  }
+}, 600);
+
+// SERVICE WORKER
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("./service-worker.js")
+      .catch(err => console.log("SW error", err));
+  });
+}
+</script>
+</body>
+</html>
