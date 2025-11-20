@@ -534,69 +534,75 @@ let state = {
 function seedDefaultVehicles() {
   if (state.vehicles.length) return;
 
+  // ------- SEED VEHÍCULOS --------
+function seedDefaultVehicles() {
+  if (state.vehicles.length) return;
+
   const defaults = [
-    // 🔵 Nissan Leaf – Versión estándar (40 kWh)
-{
-  id:"leaf40",
-  alias:"Leaf 40 kWh",
-  brand:"Nissan",
-  model:"Leaf 40 kWh",
-  year:"2018-2024",
-  usableKwh:"39.0",
-  ratedConsumption:"18.0"
-},
+    // Nissan Leaf – estándar 40 kWh
+    {
+      id:"leaf40",
+      alias:"Leaf 40 kWh",
+      brand:"Nissan",
+      model:"Leaf 40 kWh",
+      year:"2018-2024",
+      usableKwh:"39.0",
+      ratedConsumption:"18.0"
+    },
 
-// 🟢 Nissan Leaf PLUS – Long Range (62 kWh)
-{
-  id:"leaf62",
-  alias:"Leaf Plus 62 kWh",
-  brand:"Nissan",
-  model:"Leaf Plus 62 kWh",
-  year:"2019-2024",
-  usableKwh:"56.0",
-  ratedConsumption:"19.0"
-},
+    // Nissan Leaf Plus – 62 kWh
+    {
+      id:"leaf62",
+      alias:"Leaf Plus 62 kWh",
+      brand:"Nissan",
+      model:"Leaf Plus 62 kWh",
+      year:"2019-2024",
+      usableKwh:"56.0",
+      ratedConsumption:"19.0"
+    },
+
     { id:"hyundai-ioniq5-sel-awd", alias:"Ioniq 5 SEL AWD", brand:"Hyundai", model:"Ioniq 5 SEL AWD", year:"2023", usableKwh:"72.6", ratedConsumption:"17.0" },
-{ id:"ioniq6-rwd", alias:"Ioniq 6 RWD", brand:"Hyundai", model:"Ioniq 6 Long Range RWD", year:"2024", usableKwh:"72.6", ratedConsumption:"16.0" },
-{ id:"ioniq6-awd", alias:"Ioniq 6 AWD", brand:"Hyundai", model:"Ioniq 6 Long Range AWD", year:"2024", usableKwh:"72.6", ratedConsumption:"18.0" },
-{ id:"kona-ev", alias:"Kona Electric 64 kWh", brand:"Hyundai", model:"Kona Electric 64 kWh", year:"2022", usableKwh:"64", ratedConsumption:"14.7" },
+    { id:"ioniq6-rwd", alias:"Ioniq 6 RWD", brand:"Hyundai", model:"Ioniq 6 Long Range RWD", year:"2024", usableKwh:"72.6", ratedConsumption:"16.0" },
+    { id:"ioniq6-awd", alias:"Ioniq 6 AWD", brand:"Hyundai", model:"Ioniq 6 Long Range AWD", year:"2024", usableKwh:"72.6", ratedConsumption:"18.0" },
+    { id:"kona-ev", alias:"Kona Electric 64 kWh", brand:"Hyundai", model:"Kona Electric 64 kWh", year:"2022", usableKwh:"64", ratedConsumption:"14.7" },
 
-{ id:"kia-ev6-wind", alias:"EV6 Wind RWD", brand:"Kia", model:"EV6 Wind RWD", year:"2023", usableKwh:"72.5", ratedConsumption:"16.5" },
+    { id:"kia-ev6-wind", alias:"EV6 Wind RWD", brand:"Kia", model:"EV6 Wind RWD", year:"2023", usableKwh:"72.5", ratedConsumption:"16.5" },
 
-{ id:"tesla-m3lr", alias:"Model 3 LR", brand:"Tesla", model:"Model 3 Long Range", year:"2023", usableKwh:"75", ratedConsumption:"15.5" },
-{ id:"tesla-my", alias:"Model Y LR", brand:"Tesla", model:"Model Y Long Range", year:"2023", usableKwh:"75", ratedConsumption:"16.9" },
-{ id:"cybertruck-awd", alias:"Cybertruck AWD", brand:"Tesla", model:"Cybertruck AWD", year:"2024", usableKwh:"123", ratedConsumption:"24.0" },
-{ id:"cybertruck-beast", alias:"Cyberbeast", brand:"Tesla", model:"Cybertruck Cyberbeast", year:"2024", usableKwh:"123", ratedConsumption:"27.0" },
+    { id:"tesla-m3lr", alias:"Model 3 LR", brand:"Tesla", model:"Model 3 Long Range", year:"2023", usableKwh:"75", ratedConsumption:"15.5" },
+    { id:"tesla-my", alias:"Model Y LR", brand:"Tesla", model:"Model Y Long Range", year:"2023", usableKwh:"75", ratedConsumption:"16.9" },
+    { id:"cybertruck-awd", alias:"Cybertruck AWD", brand:"Tesla", model:"Cybertruck AWD", year:"2024", usableKwh:"123", ratedConsumption:"24.0" },
+    { id:"cybertruck-beast", alias:"Cyberbeast", brand:"Tesla", model:"Cybertruck Cyberbeast", year:"2024", usableKwh:"123", ratedConsumption:"27.0" },
 
-{ id:"rivian-r1t", alias:"R1T Large Pack", brand:"Rivian", model:"R1T", year:"2023", usableKwh:"135", ratedConsumption:"25" },
+    { id:"rivian-r1t", alias:"R1T Large Pack", brand:"Rivian", model:"R1T", year:"2023", usableKwh:"135", ratedConsumption:"25" },
 
-{ id:"bmw-i4", alias:"i4 eDrive40", brand:"BMW", model:"i4 eDrive40", year:"2023", usableKwh:"80.7", ratedConsumption:"18.0" },
-{ id:"merc-eqe", alias:"EQE 350+", brand:"Mercedes-Benz", model:"EQE 350+", year:"2023", usableKwh:"90.6", ratedConsumption:"19.0" },
+    { id:"bmw-i4", alias:"i4 eDrive40", brand:"BMW", model:"i4 eDrive40", year:"2023", usableKwh:"80.7", ratedConsumption:"18.0" },
+    { id:"merc-eqe", alias:"EQE 350+", brand:"Mercedes-Benz", model:"EQE 350+", year:"2023", usableKwh:"90.6", ratedConsumption:"19.0" },
 
-{ id:"bolt-ev", alias:"Bolt EV", brand:"Chevrolet", model:"Bolt EV", year:"2017-2024", usableKwh:"65", ratedConsumption:"17.0" },
-{ id:"bolt-euv", alias:"Bolt EUV", brand:"Chevrolet", model:"Bolt EUV", year:"2022-2024", usableKwh:"65", ratedConsumption:"18.0" },
-{ id:"blazer-ev", alias:"Blazer EV", brand:"Chevrolet", model:"Blazer EV", year:"2024", usableKwh:"85", ratedConsumption:"19.0" },
-{ id:"equinox-ev", alias:"Equinox EV", brand:"Chevrolet", model:"Equinox EV", year:"2024", usableKwh:"85", ratedConsumption:"17.5" },
-{ id:"silverado-ev", alias:"Silverado EV WT", brand:"Chevrolet", model:"Silverado EV (Work Truck)", year:"2024", usableKwh:"200", ratedConsumption:"28.0" },
+    { id:"bolt-ev", alias:"Bolt EV", brand:"Chevrolet", model:"Bolt EV", year:"2017-2024", usableKwh:"65", ratedConsumption:"17.0" },
+    { id:"bolt-euv", alias:"Bolt EUV", brand:"Chevrolet", model:"Bolt EUV", year:"2022-2024", usableKwh:"65", ratedConsumption:"18.0" },
+    { id:"blazer-ev", alias:"Blazer EV", brand:"Chevrolet", model:"Blazer EV", year:"2024", usableKwh:"85", ratedConsumption:"19.0" },
+    { id:"equinox-ev", alias:"Equinox EV", brand:"Chevrolet", model:"Equinox EV", year:"2024", usableKwh:"85", ratedConsumption:"17.5" },
+    { id:"silverado-ev", alias:"Silverado EV WT", brand:"Chevrolet", model:"Silverado EV (Work Truck)", year:"2024", usableKwh:"200", ratedConsumption:"28.0" },
 
-{ id:"lyriq-rwd", alias:"Lyriq RWD", brand:"Cadillac", model:"Lyriq RWD", year:"2023-2024", usableKwh:"100", ratedConsumption:"18.5" },
-{ id:"lyriq-awd", alias:"Lyriq AWD", brand:"Cadillac", model:"Lyriq AWD", year:"2023-2024", usableKwh:"100", ratedConsumption:"19.5" },
+    { id:"lyriq-rwd", alias:"Lyriq RWD", brand:"Cadillac", model:"Lyriq RWD", year:"2023-2024", usableKwh:"100", ratedConsumption:"18.5" },
+    { id:"lyriq-awd", alias:"Lyriq AWD", brand:"Cadillac", model:"Lyriq AWD", year:"2023-2024", usableKwh:"100", ratedConsumption:"19.5" },
 
-{ id:"hummer-pickup", alias:"Hummer EV Pickup", brand:"GMC", model:"Hummer EV Pickup", year:"2022-2024", usableKwh:"212", ratedConsumption:"34.0" },
-{ id:"hummer-suv", alias:"Hummer EV SUV", brand:"GMC", model:"Hummer EV SUV", year:"2023-2024", usableKwh:"170", ratedConsumption:"32.0" },
+    { id:"hummer-pickup", alias:"Hummer EV Pickup", brand:"GMC", model:"Hummer EV Pickup", year:"2022-2024", usableKwh:"212", ratedConsumption:"34.0" },
+    { id:"hummer-suv", alias:"Hummer EV SUV", brand:"GMC", model:"Hummer EV SUV", year:"2023-2024", usableKwh:"170", ratedConsumption:"32.0" },
 
-{ id:"bz4x", alias:"Toyota bZ4X", brand:"Toyota", model:"bZ4X FWD", year:"2023-2024", usableKwh:"64", ratedConsumption:"17.9" },
+    { id:"bz4x", alias:"Toyota bZ4X", brand:"Toyota", model:"bZ4X FWD", year:"2023-2024", usableKwh:"64", ratedConsumption:"17.9" },
 
-{ id:"solterra", alias:"Subaru Solterra", brand:"Subaru", model:"Solterra AWD", year:"2023-2024", usableKwh:"64", ratedConsumption:"19.5" },
+    { id:"solterra", alias:"Subaru Solterra", brand:"Subaru", model:"Solterra AWD", year:"2023-2024", usableKwh:"64", ratedConsumption:"19.5" },
 
-{ id:"mache-select", alias:"Mach-E Select", brand:"Ford", model:"Mustang Mach-E Select RWD", year:"2021-2024", usableKwh:"68", ratedConsumption:"17.5" },
-{ id:"mache-premium", alias:"Mach-E Premium ER", brand:"Ford", model:"Mustang Mach-E Extended Range", year:"2021-2024", usableKwh:"88", ratedConsumption:"19.0" },
-{ id:"f150-sr", alias:"F-150 Lightning SR", brand:"Ford", model:"F-150 Lightning Standard Range", year:"2022-2024", usableKwh:"98", ratedConsumption:"28.0" },
-{ id:"f150-er", alias:"F-150 Lightning ER", brand:"Ford", model:"F-150 Lightning Extended Range", year:"2022-2024", usableKwh:"131", ratedConsumption:"30.0" },
+    { id:"mache-select", alias:"Mach-E Select", brand:"Ford", model:"Mustang Mach-E Select RWD", year:"2021-2024", usableKwh:"68", ratedConsumption:"17.5" },
+    { id:"mache-premium", alias:"Mach-E Premium ER", brand:"Ford", model:"Mustang Mach-E Extended Range", year:"2021-2024", usableKwh:"88", ratedConsumption:"19.0" },
+    { id:"f150-sr", alias:"F-150 Lightning SR", brand:"Ford", model:"F-150 Lightning Standard Range", year:"2022-2024", usableKwh:"98", ratedConsumption:"28.0" },
+    { id:"f150-er", alias:"F-150 Lightning ER", brand:"Ford", model:"F-150 Lightning Extended Range", year:"2022-2024", usableKwh:"131", ratedConsumption:"30.0" },
 
-{ id:"lucid-pure", alias:"Lucid Air Pure", brand:"Lucid", model:"Air Pure", year:"2022-2024", usableKwh:"88", ratedConsumption:"16.0" },
-{ id:"lucid-touring", alias:"Lucid Air Touring", brand:"Lucid", model:"Air Touring", year:"2022-2024", usableKwh:"92", ratedConsumption:"16.5" },
-{ id:"lucid-gt", alias:"Lucid Air GT", brand:"Lucid", model:"Air Grand Touring", year:"2022-2024", usableKwh:"118", ratedConsumption:"18.0" }
+    { id:"lucid-pure", alias:"Lucid Air Pure", brand:"Lucid", model:"Air Pure", year:"2022-2024", usableKwh:"88", ratedConsumption:"16.0" },
+    { id:"lucid-touring", alias:"Lucid Air Touring", brand:"Lucid", model:"Air Touring", year:"2022-2024", usableKwh:"92", ratedConsumption:"16.5" },
+    { id:"lucid-gt", alias:"Lucid Air GT", brand:"Lucid", model:"Air Grand Touring", year:"2022-2024", usableKwh:"118", ratedConsumption:"18.0" }
+  ];
 
   state.vehicles = defaults;
   defaults.forEach(v => { state.chargesByVehicle[v.id] = []; });
