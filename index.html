@@ -4,9 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EV Logbook – Kairos Edition</title>
-
-  <!-- PWA -->
+  
+  <!-- Metadatos mejorados -->
+  <meta name="description" content="EV Logbook - Registra y analiza el consumo de tu vehículo eléctrico">
   <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <!-- PWA -->
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
@@ -90,6 +95,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
     }
     .vehicle-bar {
       margin-top: 12px;
@@ -120,6 +126,7 @@
       background: transparent;
       color: var(--text2);
       font-size: 13px;
+      cursor: pointer;
     }
     .tab.active {
       background: var(--accent-soft);
@@ -183,6 +190,7 @@
       font-weight: 600;
       margin-top: 10px;
       font-size: 14px;
+      cursor: pointer;
     }
     .secondary-btn {
       width: 100%;
@@ -193,6 +201,7 @@
       color: var(--text);
       margin-top: 6px;
       font-size: 13px;
+      cursor: pointer;
     }
     .secondary-btn.danger {
       border-color: #b91c1c;
@@ -257,6 +266,11 @@
       font-size: 11px;
       color: var(--text2);
       margin-top: 4px;
+    }
+    .field-hint {
+      font-size: 10px;
+      color: var(--text2);
+      margin-top: 2px;
     }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
@@ -354,31 +368,31 @@
       <small id="t_subtitle">Kairos Edition</small>
     </div>
     <div class="header-controls">
-      <select id="langSelect" class="header-select">
+      <select id="langSelect" class="header-select" aria-label="Select language">
         <option value="es">ES</option>
         <option value="en">EN</option>
       </select>
-      <select id="unitSelect" class="header-select">
+      <select id="unitSelect" class="header-select" aria-label="Select unit system">
         <option value="km">KM</option>
         <option value="mi" selected>MI</option>
       </select>
-      <button id="themeToggle" class="icon-btn">🌙</button>
+      <button id="themeToggle" class="icon-btn" aria-label="Toggle theme">🌙</button>
     </div>
   </header>
 
   <div class="vehicle-bar">
-    <select id="vehicleSelect"></select>
+    <select id="vehicleSelect" aria-label="Select vehicle"></select>
   </div>
 
-  <nav class="tabs">
-    <button class="tab active" data-tab="dashboard" id="tab_dashboard">Dashboard</button>
-    <button class="tab" data-tab="charges" id="tab_charges">Cargas</button>
-    <button class="tab" data-tab="vehicle" id="tab_vehicle">Vehículo</button>
+  <nav class="tabs" role="tablist" aria-label="Main sections">
+    <button class="tab active" role="tab" aria-selected="true" aria-controls="dashboard" data-tab="dashboard" id="tab_dashboard">Dashboard</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="charges" data-tab="charges" id="tab_charges">Cargas</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="vehicle" data-tab="vehicle" id="tab_vehicle">Vehículo</button>
   </nav>
 
   <main>
     <!-- DASHBOARD -->
-    <section id="dashboard" class="tab-panel active">
+    <section id="dashboard" class="tab-panel active" role="tabpanel" aria-labelledby="tab_dashboard">
       <div class="card">
         <h2 id="t_summary_title">Resumen</h2>
         <div class="stats-grid">
@@ -427,7 +441,7 @@
       <div class="card">
         <h2 id="t_chart_title">Historial visual</h2>
         <div class="chart-wrapper">
-          <canvas id="consumptionChart"></canvas>
+          <canvas id="consumptionChart" aria-label="Consumption history chart" role="img"></canvas>
         </div>
         <p class="hint" id="t_chart_hint">
           Consumo (kWh/100 mi) de las últimas cargas del vehículo seleccionado.
@@ -436,34 +450,40 @@
     </section>
 
     <!-- CARGAS -->
-    <section id="charges" class="tab-panel">
+    <section id="charges" class="tab-panel" role="tabpanel" aria-labelledby="tab_charges">
       <div class="card">
         <h2 id="t_new_charge_title">Nueva carga</h2>
         <p class="hint" id="chargeVehicleHint"></p>
         <form id="charge-form" autocomplete="off">
           <div class="field">
-            <label id="t_soc_start_label">% inicio</label>
-            <input type="number" id="startSoc" min="0" max="100" required />
+            <label for="startSoc" id="t_soc_start_label">% inicio</label>
+            <input type="number" id="startSoc" name="startSoc" min="0" max="100" required aria-required="true" />
+            <div class="field-hint" id="soc_start_help">Porcentaje de batería al inicio de la carga</div>
           </div>
           <div class="field">
-            <label id="t_soc_end_label">% final</label>
-            <input type="number" id="endSoc" min="0" max="100" required />
+            <label for="endSoc" id="t_soc_end_label">% final</label>
+            <input type="number" id="endSoc" name="endSoc" min="0" max="100" required aria-required="true" />
+            <div class="field-hint" id="soc_end_help">Porcentaje de batería al final de la carga</div>
           </div>
           <div class="field">
-            <label id="t_kwh_label">kWh entregados</label>
-            <input type="number" step="0.01" id="kwh" required />
+            <label for="kwh" id="t_kwh_label">kWh entregados</label>
+            <input type="number" step="0.01" id="kwh" name="kwh" required aria-required="true" />
+            <div class="field-hint" id="kwh_help">Cantidad de energía suministrada durante la carga</div>
           </div>
           <div class="field">
-            <label id="t_cost_total_label">Costo total</label>
-            <input type="number" step="0.01" id="cost" required />
+            <label for="cost" id="t_cost_total_label">Costo total</label>
+            <input type="number" step="0.01" id="cost" name="cost" required aria-required="true" />
+            <div class="field-hint" id="cost_help">Costo total de la carga en tu moneda local</div>
           </div>
           <div class="field">
-            <label id="t_distance_label">Distancia desde la última carga (mi)</label>
-            <input type="number" step="0.1" id="km" required />
+            <label for="distance" id="t_distance_label">Distancia desde la última carga (mi)</label>
+            <input type="number" step="0.1" id="distance" name="distance" required aria-required="true" />
+            <div class="field-hint" id="distance_help">Distancia recorrida desde la última carga</div>
           </div>
           <div class="field">
-            <label id="t_notes_label">Notas (opcional)</label>
-            <input type="text" id="notes" />
+            <label for="notes" id="t_notes_label">Notas (opcional)</label>
+            <input type="text" id="notes" name="notes" />
+            <div class="field-hint" id="notes_help">Condiciones de conducción, tipo de cargador, etc.</div>
           </div>
           <button type="submit" class="primary" id="t_save_charge_btn">Guardar carga</button>
         </form>
@@ -476,33 +496,33 @@
     </section>
 
     <!-- VEHÍCULO -->
-    <section id="vehicle" class="tab-panel">
+    <section id="vehicle" class="tab-panel" role="tabpanel" aria-labelledby="tab_vehicle">
       <div class="card">
         <h2 id="t_vehicle_data_title">Datos del vehículo</h2>
         <form id="vehicle-form" autocomplete="off">
           <div class="field">
-            <label id="t_alias_label">Nombre / Alias</label>
-            <input type="text" id="alias" placeholder="Ioniq 5 SEL AWD" />
+            <label for="alias" id="t_alias_label">Nombre / Alias</label>
+            <input type="text" id="alias" name="alias" placeholder="Ioniq 5 SEL AWD" />
           </div>
           <div class="field">
-            <label id="t_brand_label">Marca</label>
-            <input type="text" id="brand" />
+            <label for="brand" id="t_brand_label">Marca</label>
+            <input type="text" id="brand" name="brand" />
           </div>
           <div class="field">
-            <label id="t_model_label">Modelo</label>
-            <input type="text" id="model" />
+            <label for="model" id="t_model_label">Modelo</label>
+            <input type="text" id="model" name="model" />
           </div>
           <div class="field">
-            <label id="t_year_label">Año</label>
-            <input type="number" id="year" />
+            <label for="year" id="t_year_label">Año</label>
+            <input type="number" id="year" name="year" />
           </div>
           <div class="field">
-            <label id="t_usable_label">Capacidad usable (kWh)</label>
-            <input type="number" step="0.1" id="usableKwh" />
+            <label for="usableKwh" id="t_usable_label">Capacidad usable (kWh)</label>
+            <input type="number" step="0.1" id="usableKwh" name="usableKwh" />
           </div>
           <div class="field">
-            <label id="t_rated_label">Consumo de ficha (kWh/100 km)</label>
-            <input type="number" step="0.1" id="ratedConsumption" />
+            <label for="ratedConsumption" id="t_rated_label">Consumo de ficha (kWh/100 km)</label>
+            <input type="number" step="0.1" id="ratedConsumption" name="ratedConsumption" />
           </div>
           <button type="submit" class="primary" id="t_save_vehicle_btn">Guardar vehículo</button>
           <button type="button" class="secondary-btn" id="newVehicleInFormBtn">Nuevo vehículo</button>
@@ -523,7 +543,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = "evlogbook-kairos-v7";  // <- NUEVA CLAVE
+const STORAGE_KEY = "evlogbook-kairos-v8";  // Versión actualizada
 const KM_PER_MI = 1.60934;
 
 let state = {
@@ -535,13 +555,20 @@ let state = {
   chargesByVehicle: {}
 };
 
+// Debouncing para guardar estado
+let saveTimeout;
+function debouncedSaveState() {
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(saveState, 1000);
+}
+
 // ------- SEED VEHÍCULOS --------
 function seedDefaultVehicles() {
   if (state.vehicles.length) return;
 
   const defaults = [
     {
-      id:"leaf40",
+      id:"leaf40-2018",
       alias:"Leaf 40 kWh",
       brand:"Nissan",
       model:"Leaf 40 kWh",
@@ -550,7 +577,7 @@ function seedDefaultVehicles() {
       ratedConsumption:"18.0"
     },
     {
-      id:"leaf62",
+      id:"leaf62-2019",
       alias:"Leaf Plus 62 kWh",
       brand:"Nissan",
       model:"Leaf Plus 62 kWh",
@@ -558,49 +585,47 @@ function seedDefaultVehicles() {
       usableKwh:"56.0",
       ratedConsumption:"19.0"
     },
-
-    { id:"hyundai-ioniq5-sel-awd", alias:"Ioniq 5 SEL AWD", brand:"Hyundai", model:"Ioniq 5 SEL AWD", year:"2023", usableKwh:"72.6", ratedConsumption:"17.0" },
-    { id:"ioniq6-rwd", alias:"Ioniq 6 RWD", brand:"Hyundai", model:"Ioniq 6 Long Range RWD", year:"2024", usableKwh:"72.6", ratedConsumption:"16.0" },
-    { id:"ioniq6-awd", alias:"Ioniq 6 AWD", brand:"Hyundai", model:"Ioniq 6 Long Range AWD", year:"2024", usableKwh:"72.6", ratedConsumption:"18.0" },
-    { id:"kona-ev", alias:"Kona Electric 64 kWh", brand:"Hyundai", model:"Kona Electric 64 kWh", year:"2022", usableKwh:"64", ratedConsumption:"14.7" },
-
-    { id:"kia-ev6-wind", alias:"EV6 Wind RWD", brand:"Kia", model:"EV6 Wind RWD", year:"2023", usableKwh:"72.5", ratedConsumption:"16.5" },
-
-    { id:"tesla-m3lr", alias:"Model 3 LR", brand:"Tesla", model:"Model 3 Long Range", year:"2023", usableKwh:"75", ratedConsumption:"15.5" },
-    { id:"tesla-my", alias:"Model Y LR", brand:"Tesla", model:"Model Y Long Range", year:"2023", usableKwh:"75", ratedConsumption:"16.9" },
-    { id:"cybertruck-awd", alias:"Cybertruck AWD", brand:"Tesla", model:"Cybertruck AWD", year:"2024", usableKwh:"123", ratedConsumption:"24.0" },
-    { id:"cybertruck-beast", alias:"Cyberbeast", brand:"Tesla", model:"Cybertruck Cyberbeast", year:"2024", usableKwh:"123", ratedConsumption:"27.0" },
-
-    { id:"rivian-r1t", alias:"R1T Large Pack", brand:"Rivian", model:"R1T", year:"2023", usableKwh:"135", ratedConsumption:"25" },
-
-    { id:"bmw-i4", alias:"i4 eDrive40", brand:"BMW", model:"i4 eDrive40", year:"2023", usableKwh:"80.7", ratedConsumption:"18.0" },
-    { id:"merc-eqe", alias:"EQE 350+", brand:"Mercedes-Benz", model:"EQE 350+", year:"2023", usableKwh:"90.6", ratedConsumption:"19.0" },
-
-    { id:"bolt-ev", alias:"Bolt EV", brand:"Chevrolet", model:"Bolt EV", year:"2017-2024", usableKwh:"65", ratedConsumption:"17.0" },
-    { id:"bolt-euv", alias:"Bolt EUV", brand:"Chevrolet", model:"Bolt EUV", year:"2022-2024", usableKwh:"65", ratedConsumption:"18.0" },
-    { id:"blazer-ev", alias:"Blazer EV", brand:"Chevrolet", model:"Blazer EV", year:"2024", usableKwh:"85", ratedConsumption:"19.0" },
-    { id:"equinox-ev", alias:"Equinox EV", brand:"Chevrolet", model:"Equinox EV", year:"2024", usableKwh:"85", ratedConsumption:"17.5" },
-    { id:"silverado-ev", alias:"Silverado EV WT", brand:"Chevrolet", model:"Silverado EV (Work Truck)", year:"2024", usableKwh:"200", ratedConsumption:"28.0" },
-
-    { id:"lyriq-rwd", alias:"Lyriq RWD", brand:"Cadillac", model:"Lyriq RWD", year:"2023-2024", usableKwh:"100", ratedConsumption:"18.5" },
-    { id:"lyriq-awd", alias:"Lyriq AWD", brand:"Cadillac", model:"Lyriq AWD", year:"2023-2024", usableKwh:"100", ratedConsumption:"19.5" },
-
-    { id:"hummer-pickup", alias:"Hummer EV Pickup", brand:"GMC", model:"Hummer EV Pickup", year:"2022-2024", usableKwh:"212", ratedConsumption:"34.0" },
-    { id:"hummer-suv", alias:"Hummer EV SUV", brand:"GMC", model:"Hummer EV SUV", year:"2023-2024", usableKwh:"170", ratedConsumption:"32.0" },
-
-    { id:"bz4x", alias:"Toyota bZ4X", brand:"Toyota", model:"bZ4X FWD", year:"2023-2024", usableKwh:"64", ratedConsumption:"17.9" },
-
-    { id:"solterra", alias:"Solterra AWD", brand:"Subaru", model:"Solterra AWD", year:"2023-2024", usableKwh:"64", ratedConsumption:"19.5" },
-
-    { id:"mache-select", alias:"Mach-E Select", brand:"Ford", model:"Mustang Mach-E Select RWD", year:"2021-2024", usableKwh:"68", ratedConsumption:"17.5" },
-    { id:"mache-premium", alias:"Mach-E Premium ER", brand:"Ford", model:"Mustang Mach-E Extended Range", year:"2021-2024", usableKwh:"88", ratedConsumption:"19.0" },
-    { id:"f150-sr", alias:"F-150 Lightning SR", brand:"Ford", model:"F-150 Lightning Standard Range", year:"2022-2024", usableKwh:"98", ratedConsumption:"28.0" },
-    { id:"f150-er", alias:"F-150 Lightning ER", brand:"Ford", model:"F-150 Lightning Extended Range", year:"2022-2024", usableKwh:"131", ratedConsumption:"30.0" },
-
-    { id:"lucid-pure", alias:"Lucid Air Pure", brand:"Lucid", model:"Air Pure", year:"2022-2024", usableKwh:"88", ratedConsumption:"16.0" },
-    { id:"lucid-touring", alias:"Lucid Air Touring", brand:"Lucid", model:"Air Touring", year:"2022-2024", usableKwh:"92", ratedConsumption:"16.5" },
-    { id:"lucid-gt", alias:"Lucid Air GT", brand:"Lucid", model:"Air Grand Touring", year:"2022-2024", usableKwh:"118", ratedConsumption:"18.0" }
+    { id:"hyundai-ioniq5-sel-awd-2023", alias:"Ioniq 5 SEL AWD", brand:"Hyundai", model:"Ioniq 5 SEL AWD", year:"2023", usableKwh:"72.6", ratedConsumption:"17.0" },
+    { id:"ioniq6-rwd-2024", alias:"Ioniq 6 RWD", brand:"Hyundai", model:"Ioniq 6 Long Range RWD", year:"2024", usableKwh:"72.6", ratedConsumption:"16.0" },
+    { id:"ioniq6-awd-2024", alias:"Ioniq 6 AWD", brand:"Hyundai", model:"Ioniq 6 Long Range AWD", year:"2024", usableKwh:"72.6", ratedConsumption:"18.0" },
+    { id:"kona-ev-2022", alias:"Kona Electric 64 kWh", brand:"Hyundai", model:"Kona Electric 64 kWh", year:"2022", usableKwh:"64", ratedConsumption:"14.7" },
+    { id:"kia-ev6-wind-2023", alias:"EV6 Wind RWD", brand:"Kia", model:"EV6 Wind RWD", year:"2023", usableKwh:"72.5", ratedConsumption:"16.5" },
+    { id:"tesla-m3lr-2023", alias:"Model 3 LR", brand:"Tesla", model:"Model 3 Long Range", year:"2023", usableKwh:"75", ratedConsumption:"15.5" },
+    { id:"tesla-my-2023", alias:"Model Y LR", brand:"Tesla", model:"Model Y Long Range", year:"2023", usableKwh:"75", ratedConsumption:"16.9" },
+    { id:"cybertruck-awd-2024", alias:"Cybertruck AWD", brand:"Tesla", model:"Cybertruck AWD", year:"2024", usableKwh:"123", ratedConsumption:"24.0" },
+    { id:"cybertruck-beast-2024", alias:"Cyberbeast", brand:"Tesla", model:"Cybertruck Cyberbeast", year:"2024", usableKwh:"123", ratedConsumption:"27.0" },
+    { id:"rivian-r1t-2023", alias:"R1T Large Pack", brand:"Rivian", model:"R1T", year:"2023", usableKwh:"135", ratedConsumption:"25" },
+    { id:"bmw-i4-2023", alias:"i4 eDrive40", brand:"BMW", model:"i4 eDrive40", year:"2023", usableKwh:"80.7", ratedConsumption:"18.0" },
+    { id:"merc-eqe-2023", alias:"EQE 350+", brand:"Mercedes-Benz", model:"EQE 350+", year:"2023", usableKwh:"90.6", ratedConsumption:"19.0" },
+    { id:"bolt-ev-2017", alias:"Bolt EV", brand:"Chevrolet", model:"Bolt EV", year:"2017-2024", usableKwh:"65", ratedConsumption:"17.0" },
+    { id:"bolt-euv-2022", alias:"Bolt EUV", brand:"Chevrolet", model:"Bolt EUV", year:"2022-2024", usableKwh:"65", ratedConsumption:"18.0" },
+    { id:"blazer-ev-2024", alias:"Blazer EV", brand:"Chevrolet", model:"Blazer EV", year:"2024", usableKwh:"85", ratedConsumption:"19.0" },
+    { id:"equinox-ev-2024", alias:"Equinox EV", brand:"Chevrolet", model:"Equinox EV", year:"2024", usableKwh:"85", ratedConsumption:"17.5" },
+    { id:"silverado-ev-2024", alias:"Silverado EV WT", brand:"Chevrolet", model:"Silverado EV (Work Truck)", year:"2024", usableKwh:"200", ratedConsumption:"28.0" },
+    { id:"lyriq-rwd-2023", alias:"Lyriq RWD", brand:"Cadillac", model:"Lyriq RWD", year:"2023-2024", usableKwh:"100", ratedConsumption:"18.5" },
+    { id:"lyriq-awd-2023", alias:"Lyriq AWD", brand:"Cadillac", model:"Lyriq AWD", year:"2023-2024", usableKwh:"100", ratedConsumption:"19.5" },
+    { id:"hummer-pickup-2022", alias:"Hummer EV Pickup", brand:"GMC", model:"Hummer EV Pickup", year:"2022-2024", usableKwh:"212", ratedConsumption:"34.0" },
+    { id:"hummer-suv-2023", alias:"Hummer EV SUV", brand:"GMC", model:"Hummer EV SUV", year:"2023-2024", usableKwh:"170", ratedConsumption:"32.0" },
+    { id:"bz4x-2023", alias:"Toyota bZ4X", brand:"Toyota", model:"bZ4X FWD", year:"2023-2024", usableKwh:"64", ratedConsumption:"17.9" },
+    { id:"solterra-2023", alias:"Solterra AWD", brand:"Subaru", model:"Solterra AWD", year:"2023-2024", usableKwh:"64", ratedConsumption:"19.5" },
+    { id:"mache-select-2021", alias:"Mach-E Select", brand:"Ford", model:"Mustang Mach-E Select RWD", year:"2021-2024", usableKwh:"68", ratedConsumption:"17.5" },
+    { id:"mache-premium-2021", alias:"Mach-E Premium ER", brand:"Ford", model:"Mustang Mach-E Extended Range", year:"2021-2024", usableKwh:"88", ratedConsumption:"19.0" },
+    { id:"f150-sr-2022", alias:"F-150 Lightning SR", brand:"Ford", model:"F-150 Lightning Standard Range", year:"2022-2024", usableKwh:"98", ratedConsumption:"28.0" },
+    { id:"f150-er-2022", alias:"F-150 Lightning ER", brand:"Ford", model:"F-150 Lightning Extended Range", year:"2022-2024", usableKwh:"131", ratedConsumption:"30.0" },
+    { id:"lucid-pure-2022", alias:"Lucid Air Pure", brand:"Lucid", model:"Air Pure", year:"2022-2024", usableKwh:"88", ratedConsumption:"16.0" },
+    { id:"lucid-touring-2022", alias:"Lucid Air Touring", brand:"Lucid", model:"Air Touring", year:"2022-2024", usableKwh:"92", ratedConsumption:"16.5" },
+    { id:"lucid-gt-2022", alias:"Lucid Air GT", brand:"Lucid", model:"Air Grand Touring", year:"2022-2024", usableKwh:"118", ratedConsumption:"18.0" }
   ];
+
+  // Verificar IDs únicos
+  const ids = new Set();
+  defaults.forEach(vehicle => {
+    if (ids.has(vehicle.id)) {
+      console.warn(`ID duplicado encontrado: ${vehicle.id}`);
+      vehicle.id = `${vehicle.id}-${Date.now()}`;
+    }
+    ids.add(vehicle.id);
+  });
 
   state.vehicles = defaults;
   defaults.forEach(v => { state.chargesByVehicle[v.id] = []; });
@@ -623,27 +648,33 @@ function loadState() {
         return Object.assign({}, c, { kmBase: km });
       });
     });
-  } catch(e) { console.warn(e); }
+  } catch(e) { console.warn("Error loading state:", e); }
 }
 
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
+
 function getActiveVehicle() {
   return state.vehicles.find(v => v.id === state.activeVehicleId) || null;
 }
+
 function getActiveCharges() {
   return state.chargesByVehicle[state.activeVehicleId] || [];
 }
+
 function kmToCurrent(km) {
   return state.unit === "km" ? km : km / KM_PER_MI;
 }
+
 function currentToKm(dist) {
   return state.unit === "km" ? dist : dist * KM_PER_MI;
 }
+
 function per100kmToUnit(v) {
   return state.unit === "km" ? v : v * KM_PER_MI;
 }
+
 function costPer100kmToUnit(v) {
   return state.unit === "km" ? v : v * KM_PER_MI;
 }
@@ -700,7 +731,7 @@ const i18n = {
     export_backup_btn: "Exportar backup (JSON)",
     hint_no_vehicle: "Crea tu primer vehículo para empezar a registrar.",
     hint_no_charges: "Aún no hay cargas guardadas para este vehículo.",
-    hint_create_vehicle_first: "Primero crea un vehículo en la pestaña “Vehículo”.",
+    hint_create_vehicle_first: "Primero crea un vehículo en la pestaña 'Vehículo'.",
     hint_charges_for: name => "Guardando cargas para: " + name,
     print_btn: "Imprimir / Exportar PDF",
     vehicle_select_placeholder: "Selecciona un vehículo",
@@ -711,7 +742,9 @@ const i18n = {
     alert_create_vehicle_first: "Primero crea un vehículo.",
     alert_backup_invalid: "Archivo de backup inválido.",
     alert_backup_error: "Error al leer el backup.",
-    alert_backup_restored: "Backup restaurado."
+    alert_backup_restored: "Backup restaurado.",
+    alert_soc_invalid: "El porcentaje final debe ser mayor al inicial.",
+    alert_min_charge: "La carga debe ser de al menos 5% para ser significativa."
   },
   en: {
     app_name: "EV Logbook",
@@ -763,7 +796,7 @@ const i18n = {
     export_backup_btn: "Export backup (JSON)",
     hint_no_vehicle: "Create your first vehicle to start logging.",
     hint_no_charges: "No charges saved yet for this vehicle.",
-    hint_create_vehicle_first: "Create a vehicle in the “Vehicle” tab first.",
+    hint_create_vehicle_first: "Create a vehicle in the 'Vehicle' tab first.",
     hint_charges_for: name => "Logging charges for: " + name,
     print_btn: "Print / Export PDF",
     vehicle_select_placeholder: "Select a vehicle",
@@ -774,7 +807,9 @@ const i18n = {
     alert_create_vehicle_first: "Create a vehicle first.",
     alert_backup_invalid: "Invalid backup file.",
     alert_backup_error: "Error reading backup file.",
-    alert_backup_restored: "Backup restored."
+    alert_backup_restored: "Backup restored.",
+    alert_soc_invalid: "End percentage must be higher than start.",
+    alert_min_charge: "Charge must be at least 5% to be significant."
   }
 };
 
@@ -816,10 +851,12 @@ function applyTheme(theme) {
   state.theme = theme;
   if (theme === "light") {
     document.body.classList.add("light");
-    themeToggle.textContent = "🌙";
+    themeToggle.textContent = "☀️";
+    themeToggle.setAttribute("aria-label", "Switch to dark mode");
   } else {
     document.body.classList.remove("light");
     themeToggle.textContent = "🌙";
+    themeToggle.setAttribute("aria-label", "Switch to light mode");
   }
 }
 
@@ -919,6 +956,7 @@ function updateChargeFormAvailability() {
 }
 
 let chartCtx = null;
+let chartData = [];
 function drawChart(values) {
   if (!chartCanvas) return;
   if (!chartCtx) chartCtx = chartCanvas.getContext("2d");
@@ -957,6 +995,11 @@ function drawChart(values) {
   ctx.stroke();
 }
 
+function updateChartData(newData) {
+  chartData = newData;
+  drawChart(chartData);
+}
+
 function formatDate(d) {
   return new Date(d).toLocaleString();
 }
@@ -975,7 +1018,7 @@ function renderChargesAndStats() {
     sohValue.textContent = "–";
     degValue.textContent = "–";
     batteryLevelEl.style.width = "30%";
-    drawChart([]);
+    updateChartData([]);
     return;
   }
   const charges = getActiveCharges();
@@ -989,7 +1032,7 @@ function renderChargesAndStats() {
     sohValue.textContent = "–";
     degValue.textContent = "–";
     batteryLevelEl.style.width = "45%";
-    drawChart([]);
+    updateChartData([]);
     return;
   }
 
@@ -1083,22 +1126,26 @@ function renderChargesAndStats() {
     batteryLevelEl.style.width = "50%";
   }
 
-  drawChart(chartVals.reverse());
+  updateChartData(chartVals.reverse());
 }
 
 // ------- EVENTOS UI --------
 tabButtons.forEach(btn => {
   btn.addEventListener("click", () => {
-    tabButtons.forEach(b => b.classList.remove("active"));
+    tabButtons.forEach(b => {
+      b.classList.remove("active");
+      b.setAttribute("aria-selected", "false");
+    });
     panels.forEach(p => p.classList.remove("active"));
     btn.classList.add("active");
+    btn.setAttribute("aria-selected", "true");
     document.getElementById(btn.dataset.tab).classList.add("active");
   });
 });
 
 langSelect.addEventListener("change", () => {
   state.lang = langSelect.value;
-  saveState();
+  debouncedSaveState();
   applyTranslations();
   renderVehicleSelect();
   renderVehicleForm();
@@ -1107,7 +1154,7 @@ langSelect.addEventListener("change", () => {
 
 unitSelect.addEventListener("change", () => {
   state.unit = unitSelect.value;
-  saveState();
+  debouncedSaveState();
   applyTranslations();
   renderChargesAndStats();
 });
@@ -1115,12 +1162,12 @@ unitSelect.addEventListener("change", () => {
 themeToggle.addEventListener("click", () => {
   state.theme = state.theme === "dark" ? "light" : "dark";
   applyTheme(state.theme);
-  saveState();
+  debouncedSaveState();
 });
 
 vehicleSelect.addEventListener("change", () => {
   state.activeVehicleId = vehicleSelect.value || null;
-  saveState();
+  debouncedSaveState();
   renderVehicleForm();
   renderChargesAndStats();
 });
@@ -1151,7 +1198,7 @@ deleteVehicleBtn.addEventListener("click", () => {
   } else {
     state.activeVehicleId = null;
   }
-  saveState();
+  debouncedSaveState();
   renderVehicleSelect();
   renderVehicleForm();
   renderChargesAndStats();
@@ -1186,7 +1233,7 @@ vehicleForm.addEventListener("submit", e => {
       });
     }
   }
-  saveState();
+  debouncedSaveState();
   renderVehicleSelect();
   renderVehicleForm();
   renderChargesAndStats();
@@ -1201,12 +1248,25 @@ chargeForm.addEventListener("submit", e => {
   const endSoc = parseFloat(document.getElementById("endSoc").value);
   const kwh = parseFloat(document.getElementById("kwh").value);
   const cost = parseFloat(document.getElementById("cost").value);
-  const dist = parseFloat(document.getElementById("km").value);
+  const dist = parseFloat(document.getElementById("distance").value);
   const notes = document.getElementById("notes").value.trim();
+  
+  // Validación mejorada
   if ([startSoc,endSoc,kwh,cost,dist].some(function(v){ return isNaN(v); })) {
     alert(t("alert_check_numbers"));
     return;
   }
+  
+  if (startSoc >= endSoc) {
+    alert(t("alert_soc_invalid"));
+    return;
+  }
+  
+  if (endSoc - startSoc < 5) {
+    alert(t("alert_min_charge"));
+    return;
+  }
+  
   const kmBase = currentToKm(dist);
   const vid = state.activeVehicleId;
   if (!state.chargesByVehicle[vid]) state.chargesByVehicle[vid] = [];
@@ -1219,7 +1279,7 @@ chargeForm.addEventListener("submit", e => {
     kmBase: kmBase,
     notes: notes
   });
-  saveState();
+  debouncedSaveState();
   chargeForm.reset();
   renderChargesAndStats();
 });
@@ -1246,7 +1306,7 @@ importFile.addEventListener("change", e => {
         return;
       }
       state = Object.assign(state, data);
-      saveState();
+      debouncedSaveState();
       applyTheme(state.theme || "dark");
       langSelect.value = state.lang || "es";
       unitSelect.value = state.unit || "mi";
@@ -1256,6 +1316,7 @@ importFile.addEventListener("change", e => {
       renderChargesAndStats();
       alert(t("alert_backup_restored"));
     } catch(err) {
+      console.error("Backup error:", err);
       alert(t("alert_backup_error"));
     }
   };
@@ -1291,10 +1352,13 @@ setTimeout(() => {
 
 // ------- SERVICE WORKER --------
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("./service-worker.js")
-      .catch(err => console.log("SW error", err));
+  window.addEventListener("load", async () => {
+    try {
+      const registration = await navigator.serviceWorker.register("./service-worker.js");
+      console.log("Service Worker registered: ", registration);
+    } catch (error) {
+      console.log("Service Worker registration failed: ", error);
+    }
   });
 }
 </script>
