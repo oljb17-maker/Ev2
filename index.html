@@ -501,6 +501,7 @@
             <input type="number" step="0.1" id="ratedConsumption" />
           </div>
           <button type="submit" class="primary" id="t_save_vehicle_btn">Guardar vehículo</button>
+          <button type="button" class="secondary-btn" id="deleteVehicleBtn">Borrar vehículo</button>
           <button type="button" class="secondary-btn" id="newVehicleInFormBtn">Nuevo vehículo</button>
         </form>
       </div>
@@ -717,7 +718,8 @@ const i18n = {
     alert_create_vehicle_first: "Primero crea un vehículo.",
     alert_backup_invalid: "Archivo de backup inválido.",
     alert_backup_error: "Error al leer el backup.",
-    alert_backup_restored: "Backup restaurado."
+    alert_backup_restored: "Backup restaurado.",
+    delete_vehicle_btn: "Borrar vehículo"
   },
   en: {
     app_name: "EV Logbook",
@@ -778,7 +780,8 @@ const i18n = {
     alert_create_vehicle_first: "Create a vehicle first.",
     alert_backup_invalid: "Invalid backup file.",
     alert_backup_error: "Error reading backup file.",
-    alert_backup_restored: "Backup restored."
+    alert_backup_restored: "Backup restored.",
+    delete_vehicle_btn: "Delete vehicle"
   }
 };
 
@@ -810,6 +813,7 @@ const chargesList = document.getElementById("charges-list");
 const chargeVehicleHint = document.getElementById("chargeVehicleHint");
 const vehicleForm = document.getElementById("vehicle-form");
 const newVehicleInFormBtn = document.getElementById("newVehicleInFormBtn");
+const deleteVehicleBtn = document.getElementById("deleteVehicleBtn");
 const exportBtn = document.getElementById("exportBtn");
 const importFile = document.getElementById("importFile");
 const printBtn = document.getElementById("printBtn");
@@ -870,9 +874,10 @@ function applyTranslations() {
     state.unit === "km" ? t("rated_label_km") : t("rated_label_mi");
   document.getElementById("t_save_vehicle_btn").textContent = t("save_vehicle_btn");
   newVehicleInFormBtn.textContent = t("new_vehicle_btn");
+  exportBtn.textContent = t("export_backup_btn");
   document.getElementById("t_backup_title").textContent = t("backup_title");
   document.getElementById("t_backup_hint").textContent = t("backup_hint");
-  exportBtn.textContent = t("export_backup_btn");
+  if (deleteVehicleBtn) deleteVehicleBtn.textContent = t("delete_vehicle_btn");
 }
 
 function renderVehicleSelect() {
@@ -896,6 +901,12 @@ function renderVehicleSelect() {
   vehicleSelect.value = state.activeVehicleId;
 }
 
+function updateDeleteButtonVisibility() {
+  if (!deleteVehicleBtn) return;
+  const v = getActiveVehicle();
+  deleteVehicleBtn.style.display = v ? "block" : "none";
+}
+
 function renderVehicleForm() {
   const v = getActiveVehicle();
   vehicleForm.alias.value = v ? (v.alias || "") : "";
@@ -904,6 +915,7 @@ function renderVehicleForm() {
   vehicleForm.year.value = v ? (v.year || "") : "";
   vehicleForm.usableKwh.value = v ? (v.usableKwh || "") : "";
   vehicleForm.ratedConsumption.value = v ? (v.ratedConsumption || "") : "";
+  updateDeleteButtonVisibility();
 }
 
 function updateChargeFormAvailability() {
@@ -1132,6 +1144,36 @@ newVehicleInFormBtn.addEventListener("click", () => {
   renderVehicleForm();
   renderChargesAndStats();
 });
+
+if (deleteVehicleBtn) {
+  deleteVehicleBtn.addEventListener("click", () => {
+    const v = getActiveVehicle();
+    if (!v) return;
+    const name = v.alias || (v.brand + " " + v.model) || "EV";
+    const msg = state.lang === "es"
+      ? `¿Eliminar el vehículo "${name}" y todas sus cargas? Esta acción no se puede deshacer.`
+      : `Delete vehicle "${name}" and all its charges? This action cannot be undone.`;
+    if (!confirm(msg)) return;
+
+    const id = v.id;
+    // quitar vehículo
+    state.vehicles = state.vehicles.filter(vv => vv.id !== id);
+    // quitar cargas asociadas
+    delete state.chargesByVehicle[id];
+
+    // elegir nuevo activo
+    if (state.vehicles.length) {
+      state.activeVehicleId = state.vehicles[0].id;
+    } else {
+      state.activeVehicleId = null;
+    }
+
+    saveState();
+    renderVehicleSelect();
+    renderVehicleForm();
+    renderChargesAndStats();
+  });
+}
 
 vehicleForm.addEventListener("submit", e => {
   e.preventDefault();
