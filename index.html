@@ -535,6 +535,27 @@ function seedDefaultVehicles() {
   if (state.vehicles.length) return;
 
   const defaults = [
+    // 🔵 Nissan Leaf – Versión estándar (40 kWh)
+{
+  id:"leaf40",
+  alias:"Leaf 40 kWh",
+  brand:"Nissan",
+  model:"Leaf 40 kWh",
+  year:"2018-2024",
+  usableKwh:"39.0",
+  ratedConsumption:"18.0"
+},
+
+// 🟢 Nissan Leaf PLUS – Long Range (62 kWh)
+{
+  id:"leaf62",
+  alias:"Leaf Plus 62 kWh",
+  brand:"Nissan",
+  model:"Leaf Plus 62 kWh",
+  year:"2019-2024",
+  usableKwh:"56.0",
+  ratedConsumption:"19.0"
+},
     { id:"hyundai Ioniq 5 SEL AWD", alias:"Ioniq 5 SEL AWD", brand:"Hyundai", model:"Ioniq 5 SEL AWD", year:"2023", usableKwh:"72.6", ratedConsumption:"17.0" },
     { id:"tesla-m3lr", alias:"Model 3 LR", brand:"Tesla", model:"Model 3 Long Range", year:"2023", usableKwh:"75", ratedConsumption:"15.5" },
     { id:"tesla-my", alias:"Model Y LR", brand:"Tesla", model:"Model Y Long Range", year:"2023", usableKwh:"75", ratedConsumption:"16.9" },
