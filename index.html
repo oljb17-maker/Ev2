@@ -16,6 +16,7 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
   <style>
+    /* [TODOS LOS ESTILOS SE MANTIENEN IGUALES] */
     :root {
       --bg: radial-gradient(circle at top, #283341 0%, #05070b 80%);
       --card: #111a22;
@@ -543,7 +544,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = "evlogbook-kairos-v9";  // Nueva versión con modelos Kia EV6 actualizados
+const STORAGE_KEY = "evlogbook-kairos-v10";  // Nueva versión corregida
 const KM_PER_MI = 1.60934;
 
 let state = {
@@ -562,9 +563,12 @@ function debouncedSaveState() {
   saveTimeout = setTimeout(saveState, 1000);
 }
 
-// ------- SEED VEHÍCULOS --------
+// ------- SEED VEHÍCULOS CORREGIDO --------
 function seedDefaultVehicles() {
-  if (state.vehicles.length) return;
+  // Verificar si ya hay vehículos en el estado actual
+  if (state.vehicles && state.vehicles.length > 0) {
+    return; // Ya hay vehículos, no hacer nada
+  }
 
   const defaults = [
     {
@@ -585,25 +589,14 @@ function seedDefaultVehicles() {
       usableKwh:"56.0",
       ratedConsumption:"19.0"
     },
-    { id:"ioniq5-se-rwd-2022", alias:"Ioniq 5 SE RWD", brand:"Hyundai", model:"Ioniq 5 SE RWD", year:"2022-2024", usableKwh:"72.6", ratedConsumption:"16.8" },
-    { id:"ioniq5-se-awd-2022", alias:"Ioniq 5 SE AWD", brand:"Hyundai", model:"Ioniq 5 SE AWD", year:"2022-2024", usableKwh:"72.6", ratedConsumption:"18.5" },
-    { id:"ioniq5-limited-rwd-2023", alias:"Ioniq 5 Limited RWD", brand:"Hyundai", model:"Ioniq 5 Limited RWD", year:"2023-2024", usableKwh:"72.6", ratedConsumption:"17.0" },
-    { id:"ioniq5-limited-awd-2023", alias:"Ioniq 5 Limited AWD", brand:"Hyundai", model:"Ioniq 5 Limited AWD", year:"2023-2024", usableKwh:"72.6", ratedConsumption:"18.7" },
-    { id:"ioniq5-sel-rwd-2023", alias:"Ioniq 5 SEL RWD", brand:"Hyundai", model:"Ioniq 5 SEL RWD", year:"2023-2024", usableKwh:"72.6", ratedConsumption:"17.0" },
-    { id:"ioniq5-sel-awd-2023", alias:"Ioniq 5 SEL AWD", brand:"Hyundai", model:"Ioniq 5 SEL AWD", year:"2023-2024", usableKwh:"72.6", ratedConsumption:"18.0" },
-    { id:"ioniq5-n-2024", alias:"Ioniq 5 N", brand:"Hyundai", model:"Ioniq 5 N Performance", year:"2024", usableKwh:"84.0", ratedConsumption:"23.5" }
+    { id:"hyundai-ioniq5-sel-awd-2023", alias:"Ioniq 5 SEL AWD", brand:"Hyundai", model:"Ioniq 5 SEL AWD", year:"2023", usableKwh:"72.6", ratedConsumption:"17.0" },
     { id:"ioniq6-rwd-2024", alias:"Ioniq 6 RWD", brand:"Hyundai", model:"Ioniq 6 Long Range RWD", year:"2024", usableKwh:"72.6", ratedConsumption:"16.0" },
     { id:"ioniq6-awd-2024", alias:"Ioniq 6 AWD", brand:"Hyundai", model:"Ioniq 6 Long Range AWD", year:"2024", usableKwh:"72.6", ratedConsumption:"18.0" },
     { id:"kona-ev-2022", alias:"Kona Electric 64 kWh", brand:"Hyundai", model:"Kona Electric 64 kWh", year:"2022", usableKwh:"64", ratedConsumption:"14.7" },
-    { id:"gv60-advanced-awd-2023", alias:"GV60 Advanced AWD", brand:"Genesis", model:"GV60 Advanced AWD", year:"2023-2024", usableKwh:"77.4", ratedConsumption:"18.0" },
-    { id:"gv60-performance-awd-2023", alias:"GV60 Performance AWD", brand:"Genesis", model:"GV60 Performance AWD", year:"2023-2024", usableKwh:"77.4", ratedConsumption:"20.0" }
-    { id:"ev9-rwd-standard-2024", alias:"EV9 RWD Standard", brand:"Hyundai", model:"EV9 RWD Standard", year:"2024", usableKwh:"76.1", ratedConsumption:"22.5" },
-    { id:"ev9-rwd-long-2024", alias:"EV9 RWD Long Range", brand:"Hyundai", model:"EV9 RWD Long Range", year:"2024", usableKwh:"99.8", ratedConsumption:"21.0" },
-    { id:"ev9-awd-long-2024", alias:"EV9 AWD Long Range", brand:"Hyundai", model:"EV9 AWD Long Range", year:"2024", usableKwh:"99.8", ratedConsumption:"24.0" },
-    { id:"ev9-gtline-awd-2024", alias:"EV9 GT-Line AWD", brand:"Hyundai", model:"EV9 GT-Line AWD", year:"2024", usableKwh:"99.8", ratedConsumption:"25.5" }
-    // Modelos Kia EV6 actualizados
+
+    // Modelos Kia EV6 CORREGIDOS (sin duplicados)
     {
-      id: "kia-ev6-wind",
+      id: "kia-ev6-wind-rwd-new",
       alias: "EV6 Wind RWD",
       brand: "Kia",
       model: "EV6 Wind RWD",
@@ -612,7 +605,7 @@ function seedDefaultVehicles() {
       ratedConsumption: "16.5"
     },
     {
-      id: "kia-ev6-wind-awd",
+      id: "kia-ev6-wind-awd-new",
       alias: "EV6 Wind AWD",
       brand: "Kia",
       model: "EV6 Wind AWD",
@@ -621,7 +614,7 @@ function seedDefaultVehicles() {
       ratedConsumption: "18.5"
     },
     {
-      id: "kia-ev6-gtline-rwd",
+      id: "kia-ev6-gtline-rwd-new",
       alias: "EV6 GT-Line RWD",
       brand: "Kia",
       model: "EV6 GT-Line RWD",
@@ -630,7 +623,7 @@ function seedDefaultVehicles() {
       ratedConsumption: "17.0"
     },
     {
-      id: "kia-ev6-gtline-awd",
+      id: "kia-ev6-gtline-awd-new",
       alias: "EV6 GT-Line AWD",
       brand: "Kia",
       model: "EV6 GT-Line AWD",
@@ -639,7 +632,7 @@ function seedDefaultVehicles() {
       ratedConsumption: "19.0"
     },
     {
-      id: "kia-ev6-gt",
+      id: "kia-ev6-gt-new",
       alias: "EV6 GT",
       brand: "Kia",
       model: "EV6 GT (AWD Performance)",
@@ -677,42 +670,66 @@ function seedDefaultVehicles() {
 
   // Verificar IDs únicos
   const ids = new Set();
+  const uniqueDefaults = [];
+  
   defaults.forEach(vehicle => {
-    if (ids.has(vehicle.id)) {
-      console.warn(`ID duplicado encontrado: ${vehicle.id}`);
-      vehicle.id = `${vehicle.id}-${Date.now()}`;
+    if (!ids.has(vehicle.id)) {
+      ids.add(vehicle.id);
+      uniqueDefaults.push(vehicle);
+    } else {
+      console.warn(`ID duplicado omitido: ${vehicle.id} - ${vehicle.alias}`);
     }
-    ids.add(vehicle.id);
   });
 
-  state.vehicles = defaults;
-  defaults.forEach(v => { state.chargesByVehicle[v.id] = []; });
-  state.activeVehicleId = defaults[0].id;
+  // Solo asignar si no hay vehículos existentes
+  state.vehicles = uniqueDefaults;
+  uniqueDefaults.forEach(v => {
+    if (!state.chargesByVehicle[v.id]) {
+      state.chargesByVehicle[v.id] = [];
+    }
+  });
+  
+  if (!state.activeVehicleId && uniqueDefaults.length > 0) {
+    state.activeVehicleId = uniqueDefaults[0].id;
+  }
 }
 
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      seedDefaultVehicles();
-      return;
-    }
-    const data = JSON.parse(raw);
-    state = Object.assign(state, data);
-    Object.keys(state.chargesByVehicle || {}).forEach(id => {
-      state.chargesByVehicle[id] = (state.chargesByVehicle[id] || []).map(c => {
-        if (typeof c.kmBase === "number") return c;
-        const km = typeof c.km === "number" ? c.km : 0;
-        return Object.assign({}, c, { kmBase: km });
+    if (raw) {
+      const data = JSON.parse(raw);
+      state = Object.assign(state, data);
+      
+      // Migrar datos antiguos si es necesario
+      Object.keys(state.chargesByVehicle || {}).forEach(id => {
+        state.chargesByVehicle[id] = (state.chargesByVehicle[id] || []).map(c => {
+          if (typeof c.kmBase === "number") return c;
+          const km = typeof c.km === "number" ? c.km : 0;
+          return Object.assign({}, c, { kmBase: km });
+        });
       });
-    });
-  } catch(e) { console.warn("Error loading state:", e); }
+    }
+    
+    // Siempre llamar a seedDefaultVehicles para asegurar que haya vehículos
+    seedDefaultVehicles();
+    
+  } catch(e) { 
+    console.warn("Error loading state:", e);
+    // En caso de error, asegurarse de que hay vehículos
+    seedDefaultVehicles();
+  }
 }
 
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e) {
+    console.error("Error saving state:", e);
+  }
 }
 
+// [EL RESTO DEL CÓDIGO SE MANTIENE IGUAL]
 function getActiveVehicle() {
   return state.vehicles.find(v => v.id === state.activeVehicleId) || null;
 }
@@ -985,19 +1002,28 @@ function renderVehicleSelect() {
     opt.textContent = v.alias || (v.brand + " " + v.model) || "EV";
     vehicleSelect.appendChild(opt);
   });
-  if (!state.activeVehicleId) state.activeVehicleId = state.vehicles[0].id;
-  vehicleSelect.value = state.activeVehicleId;
+  if (!state.activeVehicleId && state.vehicles.length > 0) {
+    state.activeVehicleId = state.vehicles[0].id;
+  }
+  if (state.activeVehicleId) {
+    vehicleSelect.value = state.activeVehicleId;
+  }
 }
 
 function renderVehicleForm() {
   const v = getActiveVehicle();
-  vehicleForm.alias.value = v ? (v.alias || "") : "";
-  vehicleForm.brand.value = v ? (v.brand || "") : "";
-  vehicleForm.model.value = v ? (v.model || "") : "";
-  vehicleForm.year.value = v ? (v.year || "") : "";
-  vehicleForm.usableKwh.value = v ? (v.usableKwh || "") : "";
-  vehicleForm.ratedConsumption.value = v ? (v.ratedConsumption || "") : "";
-  deleteVehicleBtn.disabled = !v;
+  if (v) {
+    vehicleForm.alias.value = v.alias || "";
+    vehicleForm.brand.value = v.brand || "";
+    vehicleForm.model.value = v.model || "";
+    vehicleForm.year.value = v.year || "";
+    vehicleForm.usableKwh.value = v.usableKwh || "";
+    vehicleForm.ratedConsumption.value = v.ratedConsumption || "";
+    deleteVehicleBtn.disabled = false;
+  } else {
+    vehicleForm.reset();
+    deleteVehicleBtn.disabled = true;
+  }
 }
 
 function updateChargeFormAvailability() {
