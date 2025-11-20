@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EV Logbook – Kairos Edition</title>
 
-  <!-- PWA / Tema navegador -->
+  <!-- PWA -->
   <meta name="theme-color" content="#0f172a" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
@@ -356,7 +356,7 @@
       </select>
       <select id="unitSelect" class="header-select">
         <option value="km">KM</option>
-        <option value="mi">MI</option>
+        <option value="mi" selected>MI</option>
       </select>
       <button id="themeToggle" class="icon-btn">🌙</button>
     </div>
@@ -524,13 +524,13 @@ const KM_PER_MI = 1.60934;
 let state = {
   theme: "dark",
   lang: "es",
-  unit: "mi",   // 🔸 por defecto millas
+  unit: "mi",   // por defecto millas
   vehicles: [],
   activeVehicleId: null,
   chargesByVehicle: {}
 };
 
-// Vehículos iniciales (solo se cargan si no hay nada en localStorage)
+// ------- SEED VEHÍCULOS --------
 function seedDefaultVehicles() {
   if (state.vehicles.length) return;
 
@@ -590,6 +590,7 @@ function costPer100kmToUnit(v) {
   return state.unit === "km" ? v : v * KM_PER_MI;
 }
 
+// ------- I18N --------
 const i18n = {
   es: {
     app_name: "EV Logbook",
@@ -641,7 +642,7 @@ const i18n = {
     hint_no_vehicle: "Crea tu primer vehículo para empezar a registrar.",
     hint_no_charges: "Aún no hay cargas guardadas para este vehículo.",
     hint_create_vehicle_first: "Primero crea un vehículo en la pestaña “Vehículo”.",
-    hint_charges_for: name => `Guardando cargas para: ${name}`,
+    hint_charges_for: name => "Guardando cargas para: " + name,
     print_btn: "Imprimir / Exportar PDF",
     vehicle_select_placeholder: "Selecciona un vehículo",
     alert_vehicle_min: "Coloca al menos un alias o marca/modelo.",
@@ -702,7 +703,7 @@ const i18n = {
     hint_no_vehicle: "Create your first vehicle to start logging.",
     hint_no_charges: "No charges saved yet for this vehicle.",
     hint_create_vehicle_first: "Create a vehicle in the “Vehicle” tab first.",
-    hint_charges_for: name => `Logging charges for: ${name}`,
+    hint_charges_for: name => "Logging charges for: " + name,
     print_btn: "Print / Export PDF",
     vehicle_select_placeholder: "Select a vehicle",
     alert_vehicle_min: "Enter at least an alias or brand/model.",
@@ -714,14 +715,15 @@ const i18n = {
     alert_backup_restored: "Backup restored."
   }
 };
+
 function t(key, ...args) {
   const pack = i18n[state.lang] || i18n.es;
   const val = pack[key];
-  if (typeof val === "function") return val(...args);
-  return val ?? key;
+  if (typeof val === "function") return val.apply(null,args);
+  return (val !== undefined && val !== null) ? val : key;
 }
 
-// DOM refs
+// ------- DOM --------
 const langSelect = document.getElementById("langSelect");
 const unitSelect = document.getElementById("unitSelect");
 const themeToggle = document.getElementById("themeToggle");
@@ -860,8 +862,8 @@ function drawChart(values) {
     ctx.fillText(state.lang === "es" ? "Sin datos suficientes." : "Not enough data.", 10, h/2);
     return;
   }
-  const maxVal = Math.max(...values);
-  const minVal = Math.min(...values);
+  const maxVal = Math.max.apply(null, values);
+  const minVal = Math.min.apply(null, values);
   const pad = 8;
   const uw = w - pad*2;
   const uh = h - pad*2;
@@ -874,13 +876,14 @@ function drawChart(values) {
   ctx.strokeStyle = "#2ecc71";
   ctx.lineWidth = 2;
   ctx.beginPath();
-  values.forEach((v,i) => {
+  for (let i=0;i<values.length;i++) {
+    const v = values[i];
     const x = pad + uw * (i/Math.max(values.length-1,1));
     const norm = (v - minVal) / (maxVal - minVal || 1);
     const y = pad + uh * (1-norm);
     if (i===0) ctx.moveTo(x,y);
     else ctx.lineTo(x,y);
-  });
+  }
   ctx.stroke();
 }
 function formatDate(d) {
@@ -1003,7 +1006,7 @@ function renderChargesAndStats() {
   drawChart(chartVals.reverse());
 }
 
-// Eventos UI
+// ------- EVENTOS UI --------
 tabButtons.forEach(btn => {
   btn.addEventListener("click", () => {
     tabButtons.forEach(b => b.classList.remove("active"));
@@ -1085,7 +1088,7 @@ chargeForm.addEventListener("submit", e => {
   const cost = parseFloat(document.getElementById("cost").value);
   const dist = parseFloat(document.getElementById("km").value);
   const notes = document.getElementById("notes").value.trim();
-  if ([startSoc,endSoc,kwh,cost,dist].some(v => isNaN(v))) {
+  if ([startSoc,endSoc,kwh,cost,dist].some(function(v){ return isNaN(v); })) {
     alert(t("alert_check_numbers"));
     return;
   }
@@ -1094,12 +1097,12 @@ chargeForm.addEventListener("submit", e => {
   if (!state.chargesByVehicle[vid]) state.chargesByVehicle[vid] = [];
   state.chargesByVehicle[vid].push({
     date: new Date().toISOString(),
-    startSoc,
-    endSoc,
-    kwh,
-    cost,
-    kmBase,
-    notes
+    startSoc: startSoc,
+    endSoc: endSoc,
+    kwh: kwh,
+    cost: cost,
+    kmBase: kmBase,
+    notes: notes
   });
   saveState();
   chargeForm.reset();
@@ -1124,9 +1127,6 @@ importFile.addEventListener("change", e => {
       if (!data.vehicles || !data.chargesByVehicle) {
         alert(t("alert_backup_invalid"));
         return;
-           if (!data.vehicles || !data.chargesByVehicle) {
-        alert(t("alert_backup_invalid"));
-        return;
       }
       state = Object.assign(state, data);
       saveState();
@@ -1147,7 +1147,7 @@ importFile.addEventListener("change", e => {
 
 printBtn.addEventListener("click", () => window.print());
 
-// INIT
+// ------- INIT --------
 loadState();
 applyTheme(state.theme || "dark");
 langSelect.value = state.lang || "es";
@@ -1157,7 +1157,7 @@ renderVehicleSelect();
 renderVehicleForm();
 renderChargesAndStats();
 
-// SPLASH
+// ------- SPLASH --------
 const splashEl = document.getElementById("splash");
 const appRoot = document.querySelector(".app");
 setTimeout(() => {
@@ -1172,7 +1172,7 @@ setTimeout(() => {
   }
 }, 600);
 
-// SERVICE WORKER
+// ------- SERVICE WORKER --------
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
