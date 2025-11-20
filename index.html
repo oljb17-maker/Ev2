@@ -525,113 +525,126 @@ const KM_PER_MI = 1.60934;
 let state = {
   theme: "dark",
   lang: "es",
-  unit: "mi",   // por defecto millas
+  unit: "mi",
   vehicles: [],
   activeVehicleId: null,
   chargesByVehicle: {}
 };
 
-// ------- SEED VEHÍCULOS --------
-function seedDefaultVehicles() {
-  if (state.vehicles.length) return;
+// -------- LISTA DE VEHÍCULOS POR DEFECTO (SE MEZCLA CON LOS TUYOS) ----------
+const DEFAULT_VEHICLES = [
+  // Nissan Leaf – estándar 40 kWh
+  {
+    id:"leaf40",
+    alias:"Leaf 40 kWh",
+    brand:"Nissan",
+    model:"Leaf 40 kWh",
+    year:"2018-2024",
+    usableKwh:"39.0",
+    ratedConsumption:"18.0"
+  },
+  // Nissan Leaf Plus – 62 kWh (long range)
+  {
+    id:"leaf62",
+    alias:"Leaf Plus 62 kWh",
+    brand:"Nissan",
+    model:"Leaf Plus 62 kWh",
+    year:"2019-2024",
+    usableKwh:"56.0",
+    ratedConsumption:"19.0"
+  },
 
-  const defaults = [
-    // Nissan Leaf – estándar 40 kWh
-    {
-      id:"leaf40",
-      alias:"Leaf 40 kWh",
-      brand:"Nissan",
-      model:"Leaf 40 kWh",
-      year:"2018-2024",
-      usableKwh:"39.0",
-      ratedConsumption:"18.0"
-    },
-    // Nissan Leaf Plus – 62 kWh (long range)
-    {
-      id:"leaf62",
-      alias:"Leaf Plus 62 kWh",
-      brand:"Nissan",
-      model:"Leaf Plus 62 kWh",
-      year:"2019-2024",
-      usableKwh:"56.0",
-      ratedConsumption:"19.0"
-    },
+  // Hyundai
+  { id:"hyundai-ioniq5-sel-awd", alias:"Ioniq 5 SEL AWD", brand:"Hyundai", model:"Ioniq 5 SEL AWD", year:"2023", usableKwh:"72.6", ratedConsumption:"17.0" },
+  { id:"ioniq6-rwd", alias:"Ioniq 6 RWD", brand:"Hyundai", model:"Ioniq 6 Long Range RWD", year:"2024", usableKwh:"72.6", ratedConsumption:"16.0" },
+  { id:"ioniq6-awd", alias:"Ioniq 6 AWD", brand:"Hyundai", model:"Ioniq 6 Long Range AWD", year:"2024", usableKwh:"72.6", ratedConsumption:"18.0" },
+  { id:"kona-ev", alias:"Kona Electric 64 kWh", brand:"Hyundai", model:"Kona Electric 64 kWh", year:"2022", usableKwh:"64", ratedConsumption:"14.7" },
 
-    // Hyundai
-    { id:"hyundai-ioniq5-sel-awd", alias:"Ioniq 5 SEL AWD", brand:"Hyundai", model:"Ioniq 5 SEL AWD", year:"2023", usableKwh:"72.6", ratedConsumption:"17.0" },
-    { id:"ioniq6-rwd", alias:"Ioniq 6 RWD", brand:"Hyundai", model:"Ioniq 6 Long Range RWD", year:"2024", usableKwh:"72.6", ratedConsumption:"16.0" },
-    { id:"ioniq6-awd", alias:"Ioniq 6 AWD", brand:"Hyundai", model:"Ioniq 6 Long Range AWD", year:"2024", usableKwh:"72.6", ratedConsumption:"18.0" },
-    { id:"kona-ev", alias:"Kona Electric 64 kWh", brand:"Hyundai", model:"Kona Electric 64 kWh", year:"2022", usableKwh:"64", ratedConsumption:"14.7" },
+  // Kia
+  { id:"kia-ev6-wind", alias:"EV6 Wind RWD", brand:"Kia", model:"EV6 Wind RWD", year:"2023", usableKwh:"72.5", ratedConsumption:"16.5" },
 
-    // Kia
-    { id:"kia-ev6-wind", alias:"EV6 Wind RWD", brand:"Kia", model:"EV6 Wind RWD", year:"2023", usableKwh:"72.5", ratedConsumption:"16.5" },
+  // Tesla
+  { id:"tesla-m3lr", alias:"Model 3 LR", brand:"Tesla", model:"Model 3 Long Range", year:"2023", usableKwh:"75", ratedConsumption:"15.5" },
+  { id:"tesla-my", alias:"Model Y LR", brand:"Tesla", model:"Model Y Long Range", year:"2023", usableKwh:"75", ratedConsumption:"16.9" },
+  { id:"cybertruck-awd", alias:"Cybertruck AWD", brand:"Tesla", model:"Cybertruck AWD", year:"2024", usableKwh:"123", ratedConsumption:"24.0" },
+  { id:"cybertruck-beast", alias:"Cyberbeast", brand:"Tesla", model:"Cybertruck Cyberbeast", year:"2024", usableKwh:"123", ratedConsumption:"27.0" },
 
-    // Tesla
-    { id:"tesla-m3lr", alias:"Model 3 LR", brand:"Tesla", model:"Model 3 Long Range", year:"2023", usableKwh:"75", ratedConsumption:"15.5" },
-    { id:"tesla-my", alias:"Model Y LR", brand:"Tesla", model:"Model Y Long Range", year:"2023", usableKwh:"75", ratedConsumption:"16.9" },
-    { id:"cybertruck-awd", alias:"Cybertruck AWD", brand:"Tesla", model:"Cybertruck AWD", year:"2024", usableKwh:"123", ratedConsumption:"24.0" },
-    { id:"cybertruck-beast", alias:"Cyberbeast", brand:"Tesla", model:"Cybertruck Cyberbeast", year:"2024", usableKwh:"123", ratedConsumption:"27.0" },
+  // Rivian
+  { id:"rivian-r1t", alias:"R1T Large Pack", brand:"Rivian", model:"R1T", year:"2023", usableKwh:"135", ratedConsumption:"25" },
 
-    // Rivian
-    { id:"rivian-r1t", alias:"R1T Large Pack", brand:"Rivian", model:"R1T", year:"2023", usableKwh:"135", ratedConsumption:"25" },
+  // BMW / Mercedes
+  { id:"bmw-i4", alias:"i4 eDrive40", brand:"BMW", model:"i4 eDrive40", year:"2023", usableKwh:"80.7", ratedConsumption:"18.0" },
+  { id:"merc-eqe", alias:"EQE 350+", brand:"Mercedes-Benz", model:"EQE 350+", year:"2023", usableKwh:"90.6", ratedConsumption:"19.0" },
 
-    // BMW / Mercedes
-    { id:"bmw-i4", alias:"i4 eDrive40", brand:"BMW", model:"i4 eDrive40", year:"2023", usableKwh:"80.7", ratedConsumption:"18.0" },
-    { id:"merc-eqe", alias:"EQE 350+", brand:"Mercedes-Benz", model:"EQE 350+", year:"2023", usableKwh:"90.6", ratedConsumption:"19.0" },
+  // Chevrolet
+  { id:"bolt-ev", alias:"Bolt EV", brand:"Chevrolet", model:"Bolt EV", year:"2017-2024", usableKwh:"65", ratedConsumption:"17.0" },
+  { id:"bolt-euv", alias:"Bolt EUV", brand:"Chevrolet", model:"Bolt EUV", year:"2022-2024", usableKwh:"65", ratedConsumption:"18.0" },
+  { id:"blazer-ev", alias:"Blazer EV", brand:"Chevrolet", model:"Blazer EV", year:"2024", usableKwh:"85", ratedConsumption:"19.0" },
+  { id:"equinox-ev", alias:"Equinox EV", brand:"Chevrolet", model:"Equinox EV", year:"2024", usableKwh:"85", ratedConsumption:"17.5" },
+  { id:"silverado-ev", alias:"Silverado EV WT", brand:"Chevrolet", model:"Silverado EV (Work Truck)", year:"2024", usableKwh:"200", ratedConsumption:"28.0" },
 
-    // Chevrolet
-    { id:"bolt-ev", alias:"Bolt EV", brand:"Chevrolet", model:"Bolt EV", year:"2017-2024", usableKwh:"65", ratedConsumption:"17.0" },
-    { id:"bolt-euv", alias:"Bolt EUV", brand:"Chevrolet", model:"Bolt EUV", year:"2022-2024", usableKwh:"65", ratedConsumption:"18.0" },
-    { id:"blazer-ev", alias:"Blazer EV", brand:"Chevrolet", model:"Blazer EV", year:"2024", usableKwh:"85", ratedConsumption:"19.0" },
-    { id:"equinox-ev", alias:"Equinox EV", brand:"Chevrolet", model:"Equinox EV", year:"2024", usableKwh:"85", ratedConsumption:"17.5" },
-    { id:"silverado-ev", alias:"Silverado EV WT", brand:"Chevrolet", model:"Silverado EV (Work Truck)", year:"2024", usableKwh:"200", ratedConsumption:"28.0" },
+  // Cadillac
+  { id:"lyriq-rwd", alias:"Lyriq RWD", brand:"Cadillac", model:"Lyriq RWD", year:"2023-2024", usableKwh:"100", ratedConsumption:"18.5" },
+  { id:"lyriq-awd", alias:"Lyriq AWD", brand:"Cadillac", model:"Lyriq AWD", year:"2023-2024", usableKwh:"100", ratedConsumption:"19.5" },
 
-    // Cadillac
-    { id:"lyriq-rwd", alias:"Lyriq RWD", brand:"Cadillac", model:"Lyriq RWD", year:"2023-2024", usableKwh:"100", ratedConsumption:"18.5" },
-    { id:"lyriq-awd", alias:"Lyriq AWD", brand:"Cadillac", model:"Lyriq AWD", year:"2023-2024", usableKwh:"100", ratedConsumption:"19.5" },
+  // GMC Hummer
+  { id:"hummer-pickup", alias:"Hummer EV Pickup", brand:"GMC", model:"Hummer EV Pickup", year:"2022-2024", usableKwh:"212", ratedConsumption:"34.0" },
+  { id:"hummer-suv", alias:"Hummer EV SUV", brand:"GMC", model:"Hummer EV SUV", year:"2023-2024", usableKwh:"170", ratedConsumption:"32.0" },
 
-    // GMC Hummer
-    { id:"hummer-pickup", alias:"Hummer EV Pickup", brand:"GMC", model:"Hummer EV Pickup", year:"2022-2024", usableKwh:"212", ratedConsumption:"34.0" },
-    { id:"hummer-suv", alias:"Hummer EV SUV", brand:"GMC", model:"Hummer EV SUV", year:"2023-2024", usableKwh:"170", ratedConsumption:"32.0" },
+  // Toyota + Subaru
+  { id:"bz4x", alias:"Toyota bZ4X", brand:"Toyota", model:"bZ4X FWD", year:"2023-2024", usableKwh:"64", ratedConsumption:"17.9" },
+  { id:"solterra", alias:"Solterra AWD", brand:"Subaru", model:"Solterra AWD", year:"2023-2024", usableKwh:"64", ratedConsumption:"19.5" },
 
-    // Toyota + Subaru
-    { id:"bz4x", alias:"Toyota bZ4X", brand:"Toyota", model:"bZ4X FWD", year:"2023-2024", usableKwh:"64", ratedConsumption:"17.9" },
-    { id:"solterra", alias:"Solterra AWD", brand:"Subaru", model:"Solterra AWD", year:"2023-2024", usableKwh:"64", ratedConsumption:"19.5" },
+  // Ford Mach-E + F-150 Lightning
+  { id:"mache-select", alias:"Mach-E Select", brand:"Ford", model:"Mustang Mach-E Select RWD", year:"2021-2024", usableKwh:"68", ratedConsumption:"17.5" },
+  { id:"mache-premium", alias:"Mach-E Premium ER", brand:"Ford", model:"Mustang Mach-E Extended Range", year:"2021-2024", usableKwh:"88", ratedConsumption:"19.0" },
+  { id:"f150-sr", alias:"F-150 Lightning SR", brand:"Ford", model:"F-150 Lightning Standard Range", year:"2022-2024", usableKwh:"98", ratedConsumption:"28.0" },
+  { id:"f150-er", alias:"F-150 Lightning ER", brand:"Ford", model:"F-150 Lightning Extended Range", year:"2022-2024", usableKwh:"131", ratedConsumption:"30.0" },
 
-    // Ford Mach-E + F-150 Lightning
-    { id:"mache-select", alias:"Mach-E Select", brand:"Ford", model:"Mustang Mach-E Select RWD", year:"2021-2024", usableKwh:"68", ratedConsumption:"17.5" },
-    { id:"mache-premium", alias:"Mach-E Premium ER", brand:"Ford", model:"Mustang Mach-E Extended Range", year:"2021-2024", usableKwh:"88", ratedConsumption:"19.0" },
-    { id:"f150-sr", alias:"F-150 Lightning SR", brand:"Ford", model:"F-150 Lightning Standard Range", year:"2022-2024", usableKwh:"98", ratedConsumption:"28.0" },
-    { id:"f150-er", alias:"F-150 Lightning ER", brand:"Ford", model:"F-150 Lightning Extended Range", year:"2022-2024", usableKwh:"131", ratedConsumption:"30.0" },
+  // Lucid
+  { id:"lucid-pure", alias:"Lucid Air Pure", brand:"Lucid", model:"Air Pure", year:"2022-2024", usableKwh:"88", ratedConsumption:"16.0" },
+  { id:"lucid-touring", alias:"Lucid Air Touring", brand:"Lucid", model:"Air Touring", year:"2022-2024", usableKwh:"92", ratedConsumption:"16.5" },
+  { id:"lucid-gt", alias:"Lucid Air GT", brand:"Lucid", model:"Air Grand Touring", year:"2022-2024", usableKwh:"118", ratedConsumption:"18.0" }
+];
 
-    // Lucid
-    { id:"lucid-pure", alias:"Lucid Air Pure", brand:"Lucid", model:"Air Pure", year:"2022-2024", usableKwh:"88", ratedConsumption:"16.0" },
-    { id:"lucid-touring", alias:"Lucid Air Touring", brand:"Lucid", model:"Air Touring", year:"2022-2024", usableKwh:"92", ratedConsumption:"16.5" },
-    { id:"lucid-gt", alias:"Lucid Air GT", brand:"Lucid", model:"Air Grand Touring", year:"2022-2024", usableKwh:"118", ratedConsumption:"18.0" }
-  ];
-
-  state.vehicles = defaults;
-  defaults.forEach(v => { state.chargesByVehicle[v.id] = []; });
-  state.activeVehicleId = defaults[0].id;
+// Mezcla: mantiene tus vehículos y agrega los que falten de DEFAULT_VEHICLES
+function mergeDefaultVehicles() {
+  if (!Array.isArray(state.vehicles)) state.vehicles = [];
+  if (!state.chargesByVehicle) state.chargesByVehicle = {};
+  const existingIds = new Set(state.vehicles.map(v => v.id));
+  DEFAULT_VEHICLES.forEach(def => {
+    if (!existingIds.has(def.id)) {
+      state.vehicles.push(Object.assign({}, def));
+    }
+    if (!state.chargesByVehicle[def.id]) {
+      state.chargesByVehicle[def.id] = state.chargesByVehicle[def.id] || [];
+    }
+  });
+  if (!state.activeVehicleId && state.vehicles.length) {
+    state.activeVehicleId = state.vehicles[0].id;
+  }
 }
 
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      seedDefaultVehicles();
-      return;
-    }
-    const data = JSON.parse(raw);
-    state = Object.assign(state, data);
-    Object.keys(state.chargesByVehicle || {}).forEach(id => {
-      state.chargesByVehicle[id] = (state.chargesByVehicle[id] || []).map(c => {
-        if (typeof c.kmBase === "number") return c;
-        const km = typeof c.km === "number" ? c.km : 0;
-        return Object.assign({}, c, { kmBase: km });
+    if (raw) {
+      const data = JSON.parse(raw);
+      state = Object.assign(state, data);
+      // Migración km -> kmBase por si hay datos viejos
+      Object.keys(state.chargesByVehicle || {}).forEach(id => {
+        state.chargesByVehicle[id] = (state.chargesByVehicle[id] || []).map(c => {
+          if (typeof c.kmBase === "number") return c;
+          const km = typeof c.km === "number" ? c.km : 0;
+          return Object.assign({}, c, { kmBase: km });
+        });
       });
-    });
-  } catch(e) { console.warn(e); }
+    }
+  } catch(e) {
+    console.warn(e);
+  }
+  // Siempre mezclamos los defaults (sin borrar lo tuyo)
+  mergeDefaultVehicles();
 }
 
 function saveState() {
@@ -650,7 +663,6 @@ function currentToKm(dist) {
   return state.unit === "km" ? dist : dist * KM_PER_MI;
 }
 function per100kmToUnit(v) {
-  // v = kWh/100 km -> si queremos kWh/100 mi multiplicamos por 1.609
   return state.unit === "km" ? v : v * KM_PER_MI;
 }
 function costPer100kmToUnit(v) {
@@ -1156,12 +1168,9 @@ if (deleteVehicleBtn) {
     if (!confirm(msg)) return;
 
     const id = v.id;
-    // quitar vehículo
     state.vehicles = state.vehicles.filter(vv => vv.id !== id);
-    // quitar cargas asociadas
     delete state.chargesByVehicle[id];
 
-    // elegir nuevo activo
     if (state.vehicles.length) {
       state.activeVehicleId = state.vehicles[0].id;
     } else {
@@ -1263,6 +1272,8 @@ importFile.addEventListener("change", e => {
         return;
       }
       state = Object.assign(state, data);
+      // después de restaurar, también mezclamos defaults nuevos
+      mergeDefaultVehicles();
       saveState();
       applyTheme(state.theme || "dark");
       langSelect.value = state.lang || "es";
