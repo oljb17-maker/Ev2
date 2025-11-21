@@ -904,7 +904,7 @@
 </div>
 
 <script>
-// Código JavaScript idéntico al anterior, solo cambiamos el STORAGE_KEY
+// Código JavaScript corregido - sin el problema del formulario pegado
 const STORAGE_KEY = "ev-solution-v1";
 const KM_PER_MI = 1.60934;
 
@@ -917,7 +917,11 @@ let state = {
   chargesByVehicle: {}
 };
 
-// [El resto del código JavaScript permanece exactamente igual]
+// Debug helper
+function debugLog(...args) {
+  console.log("[EV Solution]", ...args);
+}
+
 // Debouncing para guardar estado
 let saveTimeout;
 function debouncedSaveState() {
@@ -1682,48 +1686,98 @@ vehicleForm.addEventListener("submit", e => {
   alert(t("alert_vehicle_saved"));
 });
 
+// FORMULARIO DE CARGA CORREGIDO - SIN PROBLEMAS DE "PEGADO"
 chargeForm.addEventListener("submit", e => {
   e.preventDefault();
-  const v = getActiveVehicle();
-  if (!v) { alert(t("alert_create_vehicle_first")); return; }
-  const startSoc = parseFloat(document.getElementById("startSoc").value);
-  const endSoc = parseFloat(document.getElementById("endSoc").value);
-  const kwh = parseFloat(document.getElementById("kwh").value);
-  const cost = parseFloat(document.getElementById("cost").value);
-  const dist = parseFloat(document.getElementById("distance").value);
-  const notes = document.getElementById("notes").value.trim();
+  debugLog("Formulario de carga enviado");
   
-  // Validación mejorada
-  if ([startSoc,endSoc,kwh,cost,dist].some(function(v){ return isNaN(v); })) {
-    alert(t("alert_check_numbers"));
-    return;
+  try {
+    const v = getActiveVehicle();
+    debugLog("Vehículo activo:", v);
+    
+    if (!v) { 
+      alert(t("alert_create_vehicle_first")); 
+      return; 
+    }
+
+    // Obtener valores con mejor manejo de errores
+    const startSocValue = document.getElementById("startSoc").value;
+    const endSocValue = document.getElementById("endSoc").value;
+    const kwhValue = document.getElementById("kwh").value;
+    const costValue = document.getElementById("cost").value;
+    const distValue = document.getElementById("distance").value;
+    const notes = document.getElementById("notes").value.trim();
+
+    // Validar que no estén vacíos
+    if (!startSocValue || !endSocValue || !kwhValue || !costValue || !distValue) {
+      alert("Por favor, completa todos los campos requeridos");
+      return;
+    }
+
+    // Convertir a números
+    const startSoc = parseFloat(startSocValue);
+    const endSoc = parseFloat(endSocValue);
+    const kwh = parseFloat(kwhValue);
+    const cost = parseFloat(costValue);
+    const dist = parseFloat(distValue);
+
+    // Validaciones
+    if (isNaN(startSoc) || isNaN(endSoc) || isNaN(kwh) || isNaN(cost) || isNaN(dist)) {
+      alert("Por favor, ingresa valores numéricos válidos");
+      return;
+    }
+
+    if (startSoc >= endSoc) {
+      alert(t("alert_soc_invalid"));
+      return;
+    }
+
+    if (endSoc - startSoc < 5) {
+      alert(t("alert_min_charge"));
+      return;
+    }
+
+    if (kwh <= 0 || cost <= 0 || dist <= 0) {
+      alert("La energía, costo y distancia deben ser mayores a 0");
+      return;
+    }
+
+    // Si pasa todas las validaciones, guardar
+    const kmBase = currentToKm(dist);
+    const vid = state.activeVehicleId;
+    if (!state.chargesByVehicle[vid]) state.chargesByVehicle[vid] = [];
+    
+    state.chargesByVehicle[vid].push({
+      date: new Date().toISOString(),
+      startSoc: startSoc,
+      endSoc: endSoc,
+      kwh: kwh,
+      cost: cost,
+      kmBase: kmBase,
+      notes: notes
+    });
+    
+    debouncedSaveState();
+    
+    // Limpiar formulario de manera segura
+    document.getElementById("startSoc").value = "";
+    document.getElementById("endSoc").value = "";
+    document.getElementById("kwh").value = "";
+    document.getElementById("cost").value = "";
+    document.getElementById("distance").value = "";
+    document.getElementById("notes").value = "";
+    
+    // Actualizar interfaz
+    renderChargesAndStats();
+    
+    // Feedback al usuario
+    alert("¡Carga guardada correctamente!");
+    debugLog("Carga guardada exitosamente");
+    
+  } catch (error) {
+    console.error("Error al guardar carga:", error);
+    alert("Error al guardar la carga: " + error.message);
   }
-  
-  if (startSoc >= endSoc) {
-    alert(t("alert_soc_invalid"));
-    return;
-  }
-  
-  if (endSoc - startSoc < 5) {
-    alert(t("alert_min_charge"));
-    return;
-  }
-  
-  const kmBase = currentToKm(dist);
-  const vid = state.activeVehicleId;
-  if (!state.chargesByVehicle[vid]) state.chargesByVehicle[vid] = [];
-  state.chargesByVehicle[vid].push({
-    date: new Date().toISOString(),
-    startSoc: startSoc,
-    endSoc: endSoc,
-    kwh: kwh,
-    cost: cost,
-    kmBase: kmBase,
-    notes: notes
-  });
-  debouncedSaveState();
-  chargeForm.reset();
-  renderChargesAndStats();
 });
 
 exportBtn.addEventListener("click", () => {
