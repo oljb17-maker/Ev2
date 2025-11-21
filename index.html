@@ -275,6 +275,71 @@
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
+    /* SLIDERS */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: 999px;
+      background: #1f2933;
+      outline: none;
+    }
+    .slider-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid #020617;
+      cursor: pointer;
+    }
+    .slider-row input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid #020617;
+      cursor: pointer;
+    }
+    .slider-value {
+      font-size: 12px;
+      color: var(--text2);
+      min-width: 64px;
+      text-align: right;
+    }
+
+    /* PROVIDER CAROUSEL */
+    .provider-carousel {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .provider-pill {
+      flex: 0 0 auto;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.25);
+      color: var(--text2);
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .provider-pill.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
     /* SPLASH */
     .splash-screen {
       position: fixed;
@@ -457,32 +522,59 @@
         <form id="charge-form" autocomplete="off">
           <div class="field">
             <label for="startSoc" id="t_soc_start_label">% inicio</label>
-            <input type="number" id="startSoc" name="startSoc" min="0" max="100" required aria-required="true" />
+            <div class="slider-row">
+              <input type="range" id="startSoc" name="startSoc" min="0" max="90" step="1" value="20" />
+              <span class="slider-value" id="startSocValue">20%</span>
+            </div>
             <div class="field-hint" id="soc_start_help">Porcentaje de batería al inicio de la carga</div>
           </div>
           <div class="field">
             <label for="endSoc" id="t_soc_end_label">% final</label>
-            <input type="number" id="endSoc" name="endSoc" min="0" max="100" required aria-required="true" />
+            <div class="slider-row">
+              <input type="range" id="endSoc" name="endSoc" min="10" max="100" step="1" value="80" />
+              <span class="slider-value" id="endSocValue">80%</span>
+            </div>
             <div class="field-hint" id="soc_end_help">Porcentaje de batería al final de la carga</div>
           </div>
           <div class="field">
             <label for="kwh" id="t_kwh_label">kWh entregados</label>
-            <input type="number" step="0.01" id="kwh" name="kwh" required aria-required="true" />
+            <div class="slider-row">
+              <input type="range" id="kwh" name="kwh" min="1" max="120" step="0.5" value="40" />
+              <span class="slider-value" id="kwhValue">40 kWh</span>
+            </div>
             <div class="field-hint" id="kwh_help">Cantidad de energía suministrada durante la carga</div>
           </div>
           <div class="field">
             <label for="cost" id="t_cost_total_label">Costo total</label>
-            <input type="number" step="0.01" id="cost" name="cost" required aria-required="true" />
+            <div class="slider-row">
+              <input type="range" id="cost" name="cost" min="0" max="80" step="0.5" value="10" />
+              <span class="slider-value" id="costValue">10 $</span>
+            </div>
             <div class="field-hint" id="cost_help">Costo total de la carga en tu moneda local</div>
           </div>
           <div class="field">
             <label for="distance" id="t_distance_label">Distancia desde la última carga (mi)</label>
-            <input type="number" step="0.1" id="distance" name="distance" required aria-required="true" />
+            <div class="slider-row">
+              <input type="range" id="distance" name="distance" min="1" max="500" step="1" value="150" />
+              <span class="slider-value" id="distanceValue">150 mi</span>
+            </div>
             <div class="field-hint" id="distance_help">Distancia recorrida desde la última carga</div>
           </div>
+
+          <div class="field">
+            <label id="t_provider_label">Proveedor de carga</label>
+            <div class="provider-carousel" id="providerCarousel">
+              <button type="button" class="provider-pill active" data-provider="EA">EA</button>
+              <button type="button" class="provider-pill" data-provider="ChargePoint">ChargePoint</button>
+              <button type="button" class="provider-pill" data-provider="EVgo">EVgo</button>
+              <button type="button" class="provider-pill" data-provider="Tesla">Tesla</button>
+              <button type="button" class="provider-pill" data-provider="Otro">Otro</button>
+            </div>
+          </div>
+
           <div class="field">
             <label for="notes" id="t_notes_label">Notas (opcional)</label>
-            <input type="text" id="notes" name="notes" />
+            <input type="text" id="notes" name="notes" placeholder="EA, clima frío, autopista, etc." />
             <div class="field-hint" id="notes_help">Condiciones de conducción, tipo de cargador, etc.</div>
           </div>
           <button type="submit" class="primary" id="t_save_charge_btn">Guardar carga</button>
@@ -543,7 +635,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = "evlogbook-kairos-v9";  // Nueva versión con modelos Kia EV6 actualizados
+const STORAGE_KEY = "evlogbook-kairos-v10";
 const KM_PER_MI = 1.60934;
 
 let state = {
@@ -555,7 +647,7 @@ let state = {
   chargesByVehicle: {}
 };
 
-// Debouncing para guardar estado
+// Debounce para guardado
 let saveTimeout;
 function debouncedSaveState() {
   clearTimeout(saveTimeout);
@@ -585,73 +677,17 @@ function seedDefaultVehicles() {
       usableKwh:"56.0",
       ratedConsumption:"19.0"
     },
-      { id:"ioniq5-se-rwd-2022", alias:"Ioniq 5 SE RWD", brand:"Hyundai", model:"Ioniq 5 SE RWD", year:"2022-2024", usableKwh:"72.6", ratedConsumption:"16.8" },
-  { id:"ioniq5-se-awd-2022", alias:"Ioniq 5 SE AWD", brand:"Hyundai", model:"Ioniq 5 SE AWD", year:"2022-2024", usableKwh:"72.6", ratedConsumption:"18.5" },
-  { id:"ioniq5-sel-rwd-2023", alias:"Ioniq 5 SEL RWD", brand:"Hyundai", model:"Ioniq 5 SEL RWD", year:"2023-2024", usableKwh:"72.6", ratedConsumption:"17.0" },
-  { id:"hyundai-ioniq5-sel-awd-2023", alias:"Ioniq 5 SEL AWD", brand:"Hyundai", model:"Ioniq 5 SEL AWD", year:"2023", usableKwh:"72.6", ratedConsumption:"17.0" },
-  { id:"ioniq5-limited-rwd-2023", alias:"Ioniq 5 Limited RWD", brand:"Hyundai", model:"Ioniq 5 Limited RWD", year:"2023-2024", usableKwh:"72.6", ratedConsumption:"17.0" },
-  { id:"ioniq5-limited-awd-2023", alias:"Ioniq 5 Limited AWD", brand:"Hyundai", model:"Ioniq 5 Limited AWD", year:"2023-2024", usableKwh:"72.6", ratedConsumption:"18.7" },
-  { id:"ioniq5-n-2024", alias:"Ioniq 5 N", brand:"Hyundai", model:"Ioniq 5 N Performance", year:"2024", usableKwh:"84.0", ratedConsumption:"23.5" },
+    { id:"hyundai-ioniq5-sel-awd-2023", alias:"Ioniq 5 SEL AWD", brand:"Hyundai", model:"Ioniq 5 SEL AWD", year:"2023", usableKwh:"72.6", ratedConsumption:"17.0" },
+    { id:"ioniq6-rwd-2024", alias:"Ioniq 6 RWD", brand:"Hyundai", model:"Ioniq 6 Long Range RWD", year:"2024", usableKwh:"72.6", ratedConsumption:"16.0" },
+    { id:"ioniq6-awd-2024", alias:"Ioniq 6 AWD", brand:"Hyundai", model:"Ioniq 6 Long Range AWD", year:"2024", usableKwh:"72.6", ratedConsumption:"18.0" },
+    { id:"kona-ev-2022", alias:"Kona Electric 64 kWh", brand:"Hyundai", model:"Kona Electric 64 kWh", year:"2022", usableKwh:"64", ratedConsumption:"14.7" },
 
-  // Hyundai Ioniq 6
-  { id:"ioniq6-rwd-2024", alias:"Ioniq 6 RWD", brand:"Hyundai", model:"Ioniq 6 Long Range RWD", year:"2024", usableKwh:"72.6", ratedConsumption:"16.0" },
-  { id:"ioniq6-awd-2024", alias:"Ioniq 6 AWD", brand:"Hyundai", model:"Ioniq 6 Long Range AWD", year:"2024", usableKwh:"72.6", ratedConsumption:"18.0" },
-
-  // Hyundai Kona EV
-  { id:"kona-ev-2022", alias:"Kona Electric 64 kWh", brand:"Hyundai", model:"Kona Electric 64 kWh", year:"2022", usableKwh:"64", ratedConsumption:"14.7" },
-
-  // Hyundai EV9
-  { id:"ev9-rwd-standard-2024", alias:"EV9 RWD Standard", brand:"Hyundai", model:"EV9 RWD Standard", year:"2024", usableKwh:"76.1", ratedConsumption:"22.5" },
-  { id:"ev9-rwd-long-2024", alias:"EV9 RWD Long Range", brand:"Hyundai", model:"EV9 RWD Long Range", year:"2024", usableKwh:"99.8", ratedConsumption:"21.0" },
-  { id:"ev9-awd-long-2024", alias:"EV9 AWD Long Range", brand:"Hyundai", model:"EV9 AWD Long Range", year:"2024", usableKwh:"99.8", ratedConsumption:"24.0" },
-  { id:"ev9-gtline-awd-2024", alias:"EV9 GT-Line AWD", brand:"Hyundai", model:"EV9 GT-Line AWD", year:"2024", usableKwh:"99.8", ratedConsumption:"25.5" },
-
-  
-    {
-      id: "kia-ev6-wind",
-      alias: "EV6 Wind RWD",
-      brand: "Kia",
-      model: "EV6 Wind RWD",
-      year: "2023-2024",
-      usableKwh: "72.5",
-      ratedConsumption: "16.5"
-    },
-    {
-      id: "kia-ev6-wind-awd",
-      alias: "EV6 Wind AWD",
-      brand: "Kia",
-      model: "EV6 Wind AWD",
-      year: "2023-2024",
-      usableKwh: "72.5",
-      ratedConsumption: "18.5"
-    },
-    {
-      id: "kia-ev6-gtline-rwd",
-      alias: "EV6 GT-Line RWD",
-      brand: "Kia",
-      model: "EV6 GT-Line RWD",
-      year: "2022-2024",
-      usableKwh: "72.5",
-      ratedConsumption: "17.0"
-    },
-    {
-      id: "kia-ev6-gtline-awd",
-      alias: "EV6 GT-Line AWD",
-      brand: "Kia",
-      model: "EV6 GT-Line AWD",
-      year: "2022-2024",
-      usableKwh: "72.5",
-      ratedConsumption: "19.0"
-    },
-    {
-      id: "kia-ev6-gt",
-      alias: "EV6 GT",
-      brand: "Kia",
-      model: "EV6 GT (AWD Performance)",
-      year: "2022-2024",
-      usableKwh: "74.0",
-      ratedConsumption: "21.0"
-    },
+    // Kia EV6
+    { id:"kia-ev6-wind", alias:"EV6 Wind RWD", brand:"Kia", model:"EV6 Wind RWD", year:"2023-2024", usableKwh:"72.5", ratedConsumption:"16.5" },
+    { id:"kia-ev6-wind-awd", alias:"EV6 Wind AWD", brand:"Kia", model:"EV6 Wind AWD", year:"2023-2024", usableKwh:"72.5", ratedConsumption:"18.5" },
+    { id:"kia-ev6-gtline-rwd", alias:"EV6 GT-Line RWD", brand:"Kia", model:"EV6 GT-Line RWD", year:"2022-2024", usableKwh:"72.5", ratedConsumption:"17.0" },
+    { id:"kia-ev6-gtline-awd", alias:"EV6 GT-Line AWD", brand:"Kia", model:"EV6 GT-Line AWD", year:"2022-2024", usableKwh:"72.5", ratedConsumption:"19.0" },
+    { id:"kia-ev6-gt", alias:"EV6 GT", brand:"Kia", model:"EV6 GT (AWD Performance)", year:"2022-2024", usableKwh:"74.0", ratedConsumption:"21.0" },
 
     { id:"tesla-m3lr-2023", alias:"Model 3 LR", brand:"Tesla", model:"Model 3 Long Range", year:"2023", usableKwh:"75", ratedConsumption:"15.5" },
     { id:"tesla-my-2023", alias:"Model Y LR", brand:"Tesla", model:"Model Y Long Range", year:"2023", usableKwh:"75", ratedConsumption:"16.9" },
@@ -680,12 +716,11 @@ function seedDefaultVehicles() {
     { id:"lucid-gt-2022", alias:"Lucid Air GT", brand:"Lucid", model:"Air Grand Touring", year:"2022-2024", usableKwh:"118", ratedConsumption:"18.0" }
   ];
 
-  // Verificar IDs únicos
   const ids = new Set();
   defaults.forEach(vehicle => {
     if (ids.has(vehicle.id)) {
-      console.warn(`ID duplicado encontrado: ${vehicle.id}`);
-      vehicle.id = `${vehicle.id}-${Date.now()}`;
+      console.warn("ID duplicado encontrado:", vehicle.id);
+      vehicle.id = vehicle.id + "-" + Date.now();
     }
     ids.add(vehicle.id);
   });
@@ -777,6 +812,7 @@ const i18n = {
     distance_label_mi: "Distancia desde la última carga (mi)",
     notes_label: "Notas (opcional)",
     notes_placeholder: "EA, clima frío, autopista, etc.",
+    provider_label: "Proveedor de carga",
     history_title: "Historial de cargas",
     vehicle_data_title: "Datos del vehículo",
     alias_label: "Nombre / Alias",
@@ -842,6 +878,7 @@ const i18n = {
     distance_label_mi: "Distance since last charge (mi)",
     notes_label: "Notes (optional)",
     notes_placeholder: "EA, cold weather, highway, etc.",
+    provider_label: "Charging provider",
     history_title: "Charge history",
     vehicle_data_title: "Vehicle data",
     alias_label: "Name / Alias",
@@ -909,7 +946,42 @@ const exportBtn = document.getElementById("exportBtn");
 const importFile = document.getElementById("importFile");
 const printBtn = document.getElementById("printBtn");
 const splashTip = document.getElementById("splashTip");
+const providerCarousel = document.getElementById("providerCarousel");
 
+// ------- SLIDER CONFIG --------
+const sliderDefs = [
+  { id:"startSoc", valueId:"startSocValue", getUnit: () => "%" },
+  { id:"endSoc", valueId:"endSocValue", getUnit: () => "%" },
+  { id:"kwh", valueId:"kwhValue", getUnit: () => " kWh" },
+  { id:"cost", valueId:"costValue", getUnit: () => " $" },
+  { id:"distance", valueId:"distanceValue", getUnit: () => " " + (state.unit === "km" ? "km" : "mi") }
+];
+
+function initSliders() {
+  sliderDefs.forEach(def => {
+    const input = document.getElementById(def.id);
+    const span = document.getElementById(def.valueId);
+    if (!input || !span) return;
+    const update = () => {
+      span.textContent = input.value + def.getUnit();
+    };
+    input.addEventListener("input", update);
+    update();
+  });
+}
+
+function updateSliderLabels() {
+  sliderDefs.forEach(def => {
+    const input = document.getElementById(def.id);
+    const span = document.getElementById(def.valueId);
+    if (!input || !span) return;
+    span.textContent = input.value + def.getUnit();
+  });
+}
+
+let selectedProvider = "EA";
+
+// ------- THEME & I18N --------
 function applyTheme(theme) {
   state.theme = theme;
   if (theme === "light") {
@@ -971,8 +1043,10 @@ function applyTranslations() {
   document.getElementById("t_backup_title").textContent = t("backup_title");
   document.getElementById("t_backup_hint").textContent = t("backup_hint");
   exportBtn.textContent = t("export_backup_btn");
+  document.getElementById("t_provider_label").textContent = t("provider_label");
 }
 
+// ------- RENDER --------
 function renderVehicleSelect() {
   vehicleSelect.innerHTML = "";
   if (!state.vehicles.length) {
@@ -1213,6 +1287,7 @@ langSelect.addEventListener("change", () => {
   renderVehicleSelect();
   renderVehicleForm();
   renderChargesAndStats();
+  updateSliderLabels();
 });
 
 unitSelect.addEventListener("change", () => {
@@ -1220,6 +1295,7 @@ unitSelect.addEventListener("change", () => {
   debouncedSaveState();
   applyTranslations();
   renderChargesAndStats();
+  updateSliderLabels();
 });
 
 themeToggle.addEventListener("click", () => {
@@ -1303,6 +1379,17 @@ vehicleForm.addEventListener("submit", e => {
   alert(t("alert_vehicle_saved"));
 });
 
+// Provider carousel
+if (providerCarousel) {
+  providerCarousel.addEventListener("click", e => {
+    const btn = e.target.closest(".provider-pill");
+    if (!btn) return;
+    providerCarousel.querySelectorAll(".provider-pill").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    selectedProvider = btn.dataset.provider || "";
+  });
+}
+
 chargeForm.addEventListener("submit", e => {
   e.preventDefault();
   const v = getActiveVehicle();
@@ -1312,38 +1399,43 @@ chargeForm.addEventListener("submit", e => {
   const kwh = parseFloat(document.getElementById("kwh").value);
   const cost = parseFloat(document.getElementById("cost").value);
   const dist = parseFloat(document.getElementById("distance").value);
-  const notes = document.getElementById("notes").value.trim();
-  
-  // Validación mejorada
-  if ([startSoc,endSoc,kwh,cost,dist].some(function(v){ return isNaN(v); })) {
+  const notesRaw = document.getElementById("notes").value.trim();
+
+  if ([startSoc,endSoc,kwh,cost,dist].some(v => isNaN(v))) {
     alert(t("alert_check_numbers"));
     return;
   }
-  
   if (startSoc >= endSoc) {
     alert(t("alert_soc_invalid"));
     return;
   }
-  
   if (endSoc - startSoc < 5) {
     alert(t("alert_min_charge"));
     return;
   }
-  
+
   const kmBase = currentToKm(dist);
   const vid = state.activeVehicleId;
   if (!state.chargesByVehicle[vid]) state.chargesByVehicle[vid] = [];
+  const notes = selectedProvider ? `[${selectedProvider}] ${notesRaw}` : notesRaw;
   state.chargesByVehicle[vid].push({
     date: new Date().toISOString(),
-    startSoc: startSoc,
-    endSoc: endSoc,
-    kwh: kwh,
-    cost: cost,
-    kmBase: kmBase,
-    notes: notes
+    startSoc,
+    endSoc,
+    kwh,
+    cost,
+    kmBase,
+    notes
   });
   debouncedSaveState();
   chargeForm.reset();
+  // reset sliders to defaults
+  document.getElementById("startSoc").value = 20;
+  document.getElementById("endSoc").value = 80;
+  document.getElementById("kwh").value = 40;
+  document.getElementById("cost").value = 10;
+  document.getElementById("distance").value = 150;
+  updateSliderLabels();
   renderChargesAndStats();
 });
 
@@ -1377,6 +1469,7 @@ importFile.addEventListener("change", e => {
       renderVehicleSelect();
       renderVehicleForm();
       renderChargesAndStats();
+      updateSliderLabels();
       alert(t("alert_backup_restored"));
     } catch(err) {
       console.error("Backup error:", err);
@@ -1397,6 +1490,8 @@ applyTranslations();
 renderVehicleSelect();
 renderVehicleForm();
 renderChargesAndStats();
+initSliders();
+updateSliderLabels();
 
 // ------- SPLASH --------
 const splashEl = document.getElementById("splash");
