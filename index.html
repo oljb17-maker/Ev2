@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EV Solution – Smart EV Analytics</title>
+  <title>EV Logbook – Kairos Edition</title>
   
   <!-- Metadatos mejorados -->
-  <meta name="description" content="EV Solution - Analytics inteligente para vehículos eléctricos">
-  <meta name="theme-color" content="#0a0e17" />
+  <meta name="description" content="EV Logbook - Registra y analiza el consumo de tu vehículo eléctrico">
+  <meta name="theme-color" content="#0f172a" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   
@@ -16,409 +16,197 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
-
     :root {
-      --bg-primary: #0a0e17;
-      --bg-secondary: #0f1525;
-      --bg-card: rgba(16, 23, 38, 0.8);
-      --bg-glass: rgba(255, 255, 255, 0.05);
-      --text-primary: #ffffff;
-      --text-secondary: #8b9bbd;
-      --text-accent: #00f0ff;
-      --accent-primary: #00f0ff;
-      --accent-secondary: #7b61ff;
-      --accent-glow: 0 0 20px rgba(0, 240, 255, 0.5);
-      --border-primary: rgba(0, 240, 255, 0.3);
-      --border-secondary: rgba(123, 97, 255, 0.3);
-      --input-bg: rgba(10, 14, 23, 0.7);
-      --success: #00ff9d;
-      --warning: #ffb800;
-      --danger: #ff2e63;
+      --bg: radial-gradient(circle at top, #283341 0%, #05070b 80%);
+      --card: #111a22;
+      --text: #f3f6fc;
+      --text2: #8e9aac;
+      --accent: #2ecc71;
+      --accent-soft: rgba(46, 204, 113, 0.18);
+      --border: #1c232e;
+      --input: #10161d;
     }
-
     body.light {
-      --bg-primary: #f0f2f8;
-      --bg-secondary: #ffffff;
-      --bg-card: rgba(255, 255, 255, 0.9);
-      --bg-glass: rgba(255, 255, 255, 0.7);
-      --text-primary: #0a0e17;
-      --text-secondary: #4a5568;
-      --text-accent: #0066cc;
-      --accent-primary: #0066cc;
-      --accent-secondary: #7b61ff;
-      --accent-glow: 0 0 15px rgba(0, 102, 204, 0.3);
-      --border-primary: rgba(0, 102, 204, 0.3);
-      --border-secondary: rgba(123, 97, 255, 0.3);
-      --input-bg: rgba(255, 255, 255, 0.8);
+      --bg: radial-gradient(circle at top, #f3f5fa 0%, #dde3ef 80%);
+      --card: #ffffff;
+      --text: #0c0e10;
+      --text2: #596579;
+      --accent: #2ecc71;
+      --accent-soft: rgba(46, 204, 113, 0.16);
+      --border: #cfd7e4;
+      --input: #f1f4fa;
     }
-
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
     }
-
     body {
       margin: 0;
-      background: var(--bg-primary);
-      font-family: 'Exo 2', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--text-primary);
-      overflow-x: hidden;
-      background-image: 
-        radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.05) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, rgba(123, 97, 255, 0.05) 0%, transparent 20%);
+      background: var(--bg);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
     }
-
     .app {
       max-width: 520px;
       margin: 0 auto;
-      padding: 16px;
+      padding: 14px;
       padding-bottom: 40px;
       opacity: 0;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.35s ease;
     }
-
     .app.ready {
       opacity: 1;
     }
-
     header.app-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-      padding: 16px;
-      background: var(--bg-card);
-      border-radius: 20px;
-      border: 1px solid var(--border-primary);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      gap: 8px;
     }
-
     .app-title-block h1 {
       margin: 0;
-      font-size: 24px;
-      font-weight: 900;
-      font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: var(--accent-glow);
+      font-size: 22px;
     }
-
     .app-title-block small {
       font-size: 12px;
-      color: var(--text-secondary);
-      letter-spacing: 1px;
-      font-weight: 500;
+      color: var(--text2);
     }
-
     .header-controls {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
     }
-
     .header-select {
-      padding: 8px 12px;
+      padding: 6px 8px;
       font-size: 12px;
-      border-radius: 12px;
-      border: 1px solid var(--border-primary);
-      background: var(--input-bg);
-      color: var(--text-primary);
-      font-weight: 500;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--input);
+      color: var(--text);
     }
-
-    .header-select:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-      box-shadow: var(--accent-glow);
-    }
-
     .icon-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
       border: none;
-      background: var(--bg-glass);
-      color: var(--text-primary);
-      font-size: 18px;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      font-size: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-      border: 1px solid var(--border-primary);
     }
-
-    .icon-btn:hover {
-      background: var(--accent-primary);
-      color: var(--bg-primary);
-      transform: translateY(-2px);
-      box-shadow: var(--accent-glow);
-    }
-
     .vehicle-bar {
-      margin-top: 16px;
+      margin-top: 12px;
       display: flex;
-      gap: 10px;
+      gap: 8px;
     }
-
     .vehicle-bar select {
       flex: 1;
-      padding: 12px 16px;
-      border-radius: 16px;
-      border: 1px solid var(--border-primary);
-      background: var(--input-bg);
-      color: var(--text-primary);
-      font-size: 14px;
-      font-weight: 500;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--input);
+      color: var(--text);
+      font-size: 13px;
     }
-
-    .vehicle-bar select:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-      box-shadow: var(--accent-glow);
-    }
-
     .tabs {
-      margin-top: 24px;
+      margin-top: 14px;
       display: flex;
-      background: var(--bg-card);
-      padding: 6px;
-      border-radius: 18px;
-      border: 1px solid var(--border-primary);
-      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.3);
+      padding: 3px;
+      border-radius: 999px;
     }
-
     .tab {
       flex: 1;
-      padding: 12px 0;
-      border-radius: 14px;
+      padding: 8px 0;
+      border-radius: 999px;
       border: none;
       background: transparent;
-      color: var(--text-secondary);
-      font-size: 14px;
-      font-weight: 600;
+      color: var(--text2);
+      font-size: 13px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
     }
-
-    .tab::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
-      transition: left 0.5s ease;
-    }
-
-    .tab:hover::before {
-      left: 100%;
-    }
-
     .tab.active {
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      color: var(--bg-primary);
-      box-shadow: var(--accent-glow);
+      background: var(--accent-soft);
+      color: var(--accent);
     }
-
     .card {
-      margin-top: 20px;
-      background: var(--bg-card);
-      border-radius: 20px;
-      border: 1px solid var(--border-primary);
-      padding: 20px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-      position: relative;
-      overflow: hidden;
+      margin-top: 14px;
+      background: var(--card);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 12px;
     }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
-    }
-
     .card h2 {
-      margin: 0 0 16px;
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-primary);
-      font-family: 'Orbitron', sans-serif;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      margin: 0 0 8px;
+      font-size: 16px;
     }
-
-    .card h2::before {
-      content: '';
-      width: 4px;
-      height: 20px;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      border-radius: 2px;
-    }
-
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 12px;
+      gap: 8px;
     }
-
     .stat {
-      padding: 16px;
-      border-radius: 16px;
-      border: 1px solid var(--border-primary);
-      background: var(--bg-glass);
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
+      padding: 6px 8px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.25);
     }
-
-    .stat::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
-    }
-
-    .stat:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--accent-glow);
-    }
-
     .stat-label {
       font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      font-weight: 500;
+      color: var(--text2);
     }
-
     .stat-value {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text-primary);
-      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
     }
-
     .field {
-      margin-bottom: 16px;
+      margin-bottom: 8px;
     }
-
     .field label {
       display: block;
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      font-weight: 500;
+      font-size: 12px;
+      color: var(--text2);
+      margin-bottom: 3px;
     }
-
     .field input {
       width: 100%;
-      padding: 14px 16px;
-      border-radius: 14px;
-      border: 1px solid var(--border-primary);
-      background: var(--input-bg);
-      color: var(--text-primary);
-      font-size: 14px;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
+      padding: 8px 9px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--input);
+      color: var(--text);
+      font-size: 13px;
     }
-
-    .field input:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-      box-shadow: var(--accent-glow);
-    }
-
     .primary {
       width: 100%;
-      padding: 16px;
-      border-radius: 16px;
+      padding: 9px;
+      border-radius: 999px;
       border: none;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      color: var(--bg-primary);
-      font-weight: 700;
-      margin-top: 16px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-family: 'Orbitron', sans-serif;
-      letter-spacing: 1px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .primary::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s ease;
-    }
-
-    .primary:hover::before {
-      left: 100%;
-    }
-
-    .primary:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--accent-glow);
-    }
-
-    .secondary-btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      border: 1px solid var(--border-primary);
-      background: transparent;
-      color: var(--text-primary);
-      margin-top: 12px;
+      background: var(--accent);
+      color: #041006;
+      font-weight: 600;
+      margin-top: 10px;
       font-size: 14px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 600;
-      backdrop-filter: blur(10px);
     }
-
-    .secondary-btn:hover {
-      border-color: var(--accent-primary);
-      color: var(--accent-primary);
-      transform: translateY(-2px);
+    .secondary-btn {
+      width: 100%;
+      padding: 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      margin-top: 6px;
+      font-size: 13px;
+      cursor: pointer;
     }
-
     .secondary-btn.danger {
-      border-color: var(--danger);
-      color: var(--danger);
+      border-color: #b91c1c;
+      color: #fca5a5;
     }
-
-    .secondary-btn.danger:hover {
-      background: var(--danger);
-      color: var(--bg-primary);
-    }
-
     .list {
       list-style: none;
       padding: 0;
@@ -426,225 +214,183 @@
       max-height: 250px;
       overflow-y: auto;
     }
-
     .list-item {
-      padding: 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      font-size: 14px;
-      transition: all 0.3s ease;
-      border-radius: 12px;
-      margin-bottom: 8px;
-      background: var(--bg-glass);
+      padding: 6px 2px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 12px;
     }
-
-    .list-item:hover {
-      background: rgba(0, 240, 255, 0.1);
-      transform: translateX(5px);
-    }
-
     .battery-row {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 12px;
     }
-
     .battery-shell {
       position: relative;
-      width: 120px;
-      height: 40px;
-      border-radius: 10px;
-      border: 2px solid var(--border-primary);
-      background: rgba(10, 14, 23, 0.8);
-      overflow: hidden;
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+      width: 90px;
+      height: 32px;
+      border-radius: 6px;
+      border: 2px solid var(--border);
+      background: #050910;
     }
-
     .battery-level {
       position: absolute;
       top: 2px;
       left: 2px;
       bottom: 2px;
       width: 40%;
-      border-radius: 8px;
-      background: linear-gradient(90deg, var(--danger), var(--warning), var(--success));
-      transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 0 15px rgba(0, 255, 157, 0.5);
+      border-radius: 4px;
+      background: linear-gradient(90deg,#e74c3c,#f1c40f,#2ecc71);
+      transition: width 0.6s ease-out;
     }
-
     .battery-tip {
       position: absolute;
-      right: -8px;
-      top: 12px;
-      width: 8px;
+      right: -7px;
+      top: 7px;
+      width: 6px;
       height: 16px;
       border-radius: 4px;
-      background: var(--border-primary);
+      background: var(--border);
     }
-
     .chart-wrapper {
-      border-radius: 16px;
-      border: 1px solid var(--border-primary);
-      padding: 16px;
-      background: var(--bg-glass);
-      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 8px;
+      background: rgba(0,0,0,0.2);
     }
-
     canvas {
       width: 100%;
-      height: 140px;
+      height: 120px;
       display: block;
     }
-
     .hint {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 8px;
-      line-height: 1.5;
-    }
-
-    .field-hint {
       font-size: 11px;
-      color: var(--text-secondary);
+      color: var(--text2);
       margin-top: 4px;
     }
+    .field-hint {
+      font-size: 10px;
+      color: var(--text2);
+      margin-top: 2px;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
 
-    .tab-panel { 
-      display: none;
-      animation: fadeIn 0.5s ease;
+    /* SLIDERS */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: 999px;
+      background: #1f2933;
+      outline: none;
+    }
+    .slider-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid #020617;
+      cursor: pointer;
+    }
+    .slider-row input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid #020617;
+      cursor: pointer;
+    }
+    .slider-value {
+      font-size: 12px;
+      color: var(--text2);
+      min-width: 64px;
+      text-align: right;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* PROVIDER CAROUSEL */
+    .provider-carousel {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .provider-pill {
+      flex: 0 0 auto;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.25);
+      color: var(--text2);
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .provider-pill.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
     }
 
-    .tab-panel.active { 
-      display: block;
-    }
-
-    /* SPLASH SCREEN FUTURISTA */
+    /* SPLASH */
     .splash-screen {
       position: fixed;
       inset: 0;
-      background: linear-gradient(135deg, var(--bg-primary), #0a1120);
+      background: radial-gradient(circle at top, #1f2937 0%, #020617 70%);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 9999;
-      color: var(--text-primary);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-      background-image: 
-        radial-gradient(circle at 20% 30%, rgba(0, 240, 255, 0.1) 0%, transparent 40%),
-        radial-gradient(circle at 80% 70%, rgba(123, 97, 255, 0.1) 0%, transparent 40%);
+      color: #e5e7eb;
+      transition: opacity 0.4s ease, transform 0.4s ease;
     }
-
     .splash-screen.hide {
       opacity: 0;
-      transform: scale(1.05);
+      transform: scale(0.98);
       pointer-events: none;
     }
-
-    .splash-inner { 
-      text-align: center;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-      100% { transform: scale(1); }
-    }
-
+    .splash-inner { text-align: center; }
     .splash-logo {
-      font-size: 36px;
-      font-weight: 900;
-      font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 30px rgba(0, 240, 255, 0.7);
-      margin-bottom: 10px;
-      letter-spacing: 2px;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
     }
-
     .splash-sub {
-      font-size: 16px;
-      color: var(--text-secondary);
+      font-size: 13px;
+      color: #9ca3af;
       margin-top: 4px;
-      letter-spacing: 3px;
-      font-weight: 300;
     }
-
     .splash-bar {
-      width: 200px;
-      height: 8px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.1);
+      width: 160px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.25);
       overflow: hidden;
-      margin: 30px auto 12px;
-      border: 1px solid var(--border-primary);
+      margin: 18px auto 8px;
     }
-
     .splash-bar-fill {
       height: 100%;
       width: 40%;
-      border-radius: 10px;
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-      animation: splash-loading 1.5s infinite, glow 2s infinite alternate;
+      border-radius: 999px;
+      background: linear-gradient(90deg,#22c55e,#a3e635);
+      animation: splash-loading 1.2s infinite;
     }
-
-    @keyframes splash-loading {
-      0% { transform: translateX(-100%); }
-      50% { transform: translateX(50%); }
-      100% { transform: translateX(200%); }
-    }
-
-    @keyframes glow {
-      from { box-shadow: 0 0 10px var(--accent-primary); }
-      to { box-shadow: 0 0 20px var(--accent-secondary); }
-    }
-
     .splash-tip {
-      font-size: 14px;
-      color: var(--text-secondary);
-      font-weight: 300;
+      font-size: 11px;
+      color: #9ca3af;
     }
-
-    /* Efectos de partículas en el fondo */
-    .particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      pointer-events: none;
-    }
-
-    .particle {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: var(--accent-primary);
-      border-radius: 50%;
-      animation: float 15s infinite linear;
-    }
-
-    @keyframes float {
-      0% {
-        transform: translateY(100vh) translateX(0);
-        opacity: 0;
-      }
-      10% {
-        opacity: 1;
-      }
-      90% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-100px) translateX(100px);
-        opacity: 0;
-      }
+    @keyframes splash-loading {
+      0%   { transform: translateX(-80%); }
+      50%  { transform: translateX(10%); }
+      100% { transform: translateX(120%); }
     }
 
     @media print {
@@ -662,55 +408,29 @@
         padding: 0;
         opacity: 1 !important;
       }
-      .card { 
-        border-radius: 0;
-        box-shadow: none;
-        border: 1px solid #ccc;
-      }
-    }
-
-    /* Scrollbar personalizado */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--bg-secondary);
-      border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+      .card { border-radius: 0; }
     }
   </style>
 </head>
 <body>
 
-<!-- Partículas de fondo -->
-<div class="particles" id="particles"></div>
-
 <!-- SPLASH -->
 <div id="splash" class="splash-screen">
   <div class="splash-inner">
-    <div class="splash-logo">EV SOLUTION</div>
-    <div class="splash-sub">SMART EV ANALYTICS</div>
+    <div class="splash-logo">EV LOGBOOK</div>
+    <div class="splash-sub">Kairos Edition</div>
     <div class="splash-bar">
       <div class="splash-bar-fill"></div>
     </div>
-    <div class="splash-tip" id="splashTip">Initializing systems...</div>
+    <div class="splash-tip" id="splashTip">Loading battery data…</div>
   </div>
 </div>
 
 <div class="app">
   <header class="app-header">
     <div class="app-title-block">
-      <h1 id="t_app_name">EV SOLUTION</h1>
-      <small id="t_subtitle">Smart EV Analytics</small>
+      <h1 id="t_app_name">EV Logbook</h1>
+      <small id="t_subtitle">Kairos Edition</small>
     </div>
     <div class="header-controls">
       <select id="langSelect" class="header-select" aria-label="Select language">
@@ -730,22 +450,16 @@
   </div>
 
   <nav class="tabs" role="tablist" aria-label="Main sections">
-    <button class="tab active" role="tab" aria-selected="true" aria-controls="dashboard" data-tab="dashboard" id="tab_dashboard">
-      <span>📊</span> Dashboard
-    </button>
-    <button class="tab" role="tab" aria-selected="false" aria-controls="charges" data-tab="charges" id="tab_charges">
-      <span>⚡</span> Cargas
-    </button>
-    <button class="tab" role="tab" aria-selected="false" aria-controls="vehicle" data-tab="vehicle" id="tab_vehicle">
-      <span>🚗</span> Vehículo
-    </button>
+    <button class="tab active" role="tab" aria-selected="true" aria-controls="dashboard" data-tab="dashboard" id="tab_dashboard">Dashboard</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="charges" data-tab="charges" id="tab_charges">Cargas</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="vehicle" data-tab="vehicle" id="tab_vehicle">Vehículo</button>
   </nav>
 
   <main>
     <!-- DASHBOARD -->
     <section id="dashboard" class="tab-panel active" role="tabpanel" aria-labelledby="tab_dashboard">
       <div class="card">
-        <h2>Resumen del Sistema</h2>
+        <h2 id="t_summary_title">Resumen</h2>
         <div class="stats-grid">
           <div class="stat">
             <div class="stat-label" id="t_range_label">Autonomía estimada</div>
@@ -767,13 +481,13 @@
       </div>
 
       <div class="card">
-        <h2>Estado de Batería</h2>
+        <h2 id="t_battery_title">Batería / SOH</h2>
         <div class="battery-row">
           <div class="battery-shell">
             <div class="battery-level" id="batteryLevel"></div>
             <div class="battery-tip"></div>
           </div>
-          <div style="font-size:14px;">
+          <div style="font-size:12px;">
             <div><span id="t_soh_label">SOH estimado:</span> <strong id="sohValue">–</strong></div>
             <div><span id="t_deg_label">Degradación:</span> <strong id="degValue">–</strong></div>
           </div>
@@ -784,13 +498,13 @@
       </div>
 
       <div class="card">
-        <h2>Última Carga</h2>
+        <h2 id="t_last_charge_title">Última carga</h2>
         <p id="last-charge">Crea un vehículo y registra tu primera carga.</p>
-        <button id="printBtn" class="secondary-btn">📄 Imprimir / Exportar PDF</button>
+        <button id="printBtn" class="secondary-btn">Imprimir / Exportar PDF</button>
       </div>
 
       <div class="card">
-        <h2>Análisis de Consumo</h2>
+        <h2 id="t_chart_title">Historial visual</h2>
         <div class="chart-wrapper">
           <canvas id="consumptionChart" aria-label="Consumption history chart" role="img"></canvas>
         </div>
@@ -803,47 +517,72 @@
     <!-- CARGAS -->
     <section id="charges" class="tab-panel" role="tabpanel" aria-labelledby="tab_charges">
       <div class="card">
-        <h2>Nueva Carga</h2>
+        <h2 id="t_new_charge_title">Nueva carga</h2>
         <p class="hint" id="chargeVehicleHint"></p>
         <form id="charge-form" autocomplete="off">
           <div class="field">
-            <label for="startSoc" id="t_soc_start_label">% Inicio de Carga</label>
-            <input type="number" id="startSoc" name="startSoc" min="0" max="100" required aria-required="true" />
+            <label for="startSoc" id="t_soc_start_label">% inicio</label>
+            <div class="slider-row">
+              <input type="range" id="startSoc" name="startSoc" min="0" max="90" step="1" value="20" />
+              <span class="slider-value" id="startSocValue">20%</span>
+            </div>
             <div class="field-hint" id="soc_start_help">Porcentaje de batería al inicio de la carga</div>
           </div>
           <div class="field">
-            <label for="endSoc" id="t_soc_end_label">% Final de Carga</label>
-            <input type="number" id="endSoc" name="endSoc" min="0" max="100" required aria-required="true" />
+            <label for="endSoc" id="t_soc_end_label">% final</label>
+            <div class="slider-row">
+              <input type="range" id="endSoc" name="endSoc" min="10" max="100" step="1" value="80" />
+              <span class="slider-value" id="endSocValue">80%</span>
+            </div>
             <div class="field-hint" id="soc_end_help">Porcentaje de batería al final de la carga</div>
           </div>
           <div class="field">
-            <label for="kwh" id="t_kwh_label">Energía Entregada (kWh)</label>
-            <input type="number" step="0.01" id="kwh" name="kwh" required aria-required="true" />
+            <label for="kwh" id="t_kwh_label">kWh entregados</label>
+            <div class="slider-row">
+              <input type="range" id="kwh" name="kwh" min="1" max="120" step="0.5" value="40" />
+              <span class="slider-value" id="kwhValue">40 kWh</span>
+            </div>
             <div class="field-hint" id="kwh_help">Cantidad de energía suministrada durante la carga</div>
           </div>
           <div class="field">
-            <label for="cost" id="t_cost_total_label">Costo Total</label>
-            <input type="number" step="0.01" id="cost" name="cost" required aria-required="true" />
+            <label for="cost" id="t_cost_total_label">Costo total</label>
+            <div class="slider-row">
+              <input type="range" id="cost" name="cost" min="0" max="80" step="0.5" value="10" />
+              <span class="slider-value" id="costValue">10 $</span>
+            </div>
             <div class="field-hint" id="cost_help">Costo total de la carga en tu moneda local</div>
           </div>
           <div class="field">
-            <label for="distance" id="t_distance_label">Distancia Recorrida (mi)</label>
-            <input type="number" step="0.1" id="distance" name="distance" required aria-required="true" />
+            <label for="distance" id="t_distance_label">Distancia desde la última carga (mi)</label>
+            <div class="slider-row">
+              <input type="range" id="distance" name="distance" min="1" max="500" step="1" value="150" />
+              <span class="slider-value" id="distanceValue">150 mi</span>
+            </div>
             <div class="field-hint" id="distance_help">Distancia recorrida desde la última carga</div>
           </div>
+
+          <div class="field">
+            <label id="t_provider_label">Proveedor de carga</label>
+            <div class="provider-carousel" id="providerCarousel">
+              <button type="button" class="provider-pill active" data-provider="EA">EA</button>
+              <button type="button" class="provider-pill" data-provider="ChargePoint">ChargePoint</button>
+              <button type="button" class="provider-pill" data-provider="EVgo">EVgo</button>
+              <button type="button" class="provider-pill" data-provider="Tesla">Tesla</button>
+              <button type="button" class="provider-pill" data-provider="Otro">Otro</button>
+            </div>
+          </div>
+
           <div class="field">
             <label for="notes" id="t_notes_label">Notas (opcional)</label>
-            <input type="text" id="notes" name="notes" />
+            <input type="text" id="notes" name="notes" placeholder="EA, clima frío, autopista, etc." />
             <div class="field-hint" id="notes_help">Condiciones de conducción, tipo de cargador, etc.</div>
           </div>
-          <button type="submit" class="primary" id="t_save_charge_btn">
-            <span>💾</span> Guardar Carga
-          </button>
+          <button type="submit" class="primary" id="t_save_charge_btn">Guardar carga</button>
         </form>
       </div>
 
       <div class="card">
-        <h2>Historial de Cargas</h2>
+        <h2 id="t_history_title">Historial de cargas</h2>
         <ul id="charges-list" class="list"></ul>
       </div>
     </section>
@@ -851,7 +590,7 @@
     <!-- VEHÍCULO -->
     <section id="vehicle" class="tab-panel" role="tabpanel" aria-labelledby="tab_vehicle">
       <div class="card">
-        <h2>Datos del Vehículo</h2>
+        <h2 id="t_vehicle_data_title">Datos del vehículo</h2>
         <form id="vehicle-form" autocomplete="off">
           <div class="field">
             <label for="alias" id="t_alias_label">Nombre / Alias</label>
@@ -870,31 +609,23 @@
             <input type="number" id="year" name="year" />
           </div>
           <div class="field">
-            <label for="usableKwh" id="t_usable_label">Capacidad Útil (kWh)</label>
+            <label for="usableKwh" id="t_usable_label">Capacidad usable (kWh)</label>
             <input type="number" step="0.1" id="usableKwh" name="usableKwh" />
           </div>
           <div class="field">
-            <label for="ratedConsumption" id="t_rated_label">Consumo Oficial (kWh/100 km)</label>
+            <label for="ratedConsumption" id="t_rated_label">Consumo de ficha (kWh/100 km)</label>
             <input type="number" step="0.1" id="ratedConsumption" name="ratedConsumption" />
           </div>
-          <button type="submit" class="primary" id="t_save_vehicle_btn">
-            <span>💾</span> Guardar Vehículo
-          </button>
-          <button type="button" class="secondary-btn" id="newVehicleInFormBtn">
-            <span>🆕</span> Nuevo Vehículo
-          </button>
-          <button type="button" class="secondary-btn danger" id="deleteVehicleBtn">
-            <span>🗑️</span> Eliminar Vehículo
-          </button>
+          <button type="submit" class="primary" id="t_save_vehicle_btn">Guardar vehículo</button>
+          <button type="button" class="secondary-btn" id="newVehicleInFormBtn">Nuevo vehículo</button>
+          <button type="button" class="secondary-btn danger" id="deleteVehicleBtn">Eliminar vehículo</button>
         </form>
       </div>
 
       <div class="card">
-        <h2>Copia de Seguridad</h2>
-        <button id="exportBtn" class="secondary-btn">
-          <span>📤</span> Exportar Backup (JSON)
-        </button>
-        <input type="file" id="importFile" accept="application/json" style="margin-top:12px;font-size:12px;width:100%;padding:12px;border-radius:12px;border:1px dashed var(--border-primary);background:var(--bg-glass);color:var(--text-primary);" />
+        <h2 id="t_backup_title">Copias de seguridad</h2>
+        <button id="exportBtn" class="secondary-btn">Exportar backup (JSON)</button>
+        <input type="file" id="importFile" accept="application/json" style="margin-top:8px;font-size:12px;" />
         <p class="hint" id="t_backup_hint">
           Exporta un archivo JSON y guárdalo en la nube. Para restaurar, selecciónalo nuevamente aquí.
         </p>
@@ -904,8 +635,7 @@
 </div>
 
 <script>
-// Código JavaScript corregido - sin el problema del formulario pegado
-const STORAGE_KEY = "ev-solution-v1";
+const STORAGE_KEY = "evlogbook-kairos-v10";
 const KM_PER_MI = 1.60934;
 
 let state = {
@@ -917,12 +647,7 @@ let state = {
   chargesByVehicle: {}
 };
 
-// Debug helper
-function debugLog(...args) {
-  console.log("[EV Solution]", ...args);
-}
-
-// Debouncing para guardar estado
+// Debounce para guardado
 let saveTimeout;
 function debouncedSaveState() {
   clearTimeout(saveTimeout);
@@ -952,57 +677,34 @@ function seedDefaultVehicles() {
       usableKwh:"56.0",
       ratedConsumption:"19.0"
     },
+    { id:"ioniq5-se-rwd-2022", alias:"Ioniq 5 SE RWD", brand:"Hyundai", model:"Ioniq 5 SE RWD", year:"2022-2024", usableKwh:"72.6", ratedConsumption:"16.5" },
+    { id:"ioniq5-se-awd-2022", alias:"Ioniq 5 SE AWD", brand:"Hyundai", model:"Ioniq 5 SE AWD", year:"2022-2024", usableKwh:"72.6", ratedConsumption:"18.0" },
+    { id:"ioniq5-limited-rwd-2022", alias:"Ioniq 5 Limited RWD", brand:"Hyundai", model:"Ioniq 5 Limited RWD", year:"2022-2024", usableKwh:"72.6", ratedConsumption:"16.8" },
+    { id:"ioniq5-limited-awd-2022", alias:"Ioniq 5 Limited AWD", brand:"Hyundai", model:"Ioniq 5 Limited AWD", year:"2022-2024", usableKwh:"72.6", ratedConsumption:"18.5" },
     { id:"hyundai-ioniq5-sel-awd-2023", alias:"Ioniq 5 SEL AWD", brand:"Hyundai", model:"Ioniq 5 SEL AWD", year:"2023", usableKwh:"72.6", ratedConsumption:"17.0" },
     { id:"ioniq6-rwd-2024", alias:"Ioniq 6 RWD", brand:"Hyundai", model:"Ioniq 6 Long Range RWD", year:"2024", usableKwh:"72.6", ratedConsumption:"16.0" },
     { id:"ioniq6-awd-2024", alias:"Ioniq 6 AWD", brand:"Hyundai", model:"Ioniq 6 Long Range AWD", year:"2024", usableKwh:"72.6", ratedConsumption:"18.0" },
     { id:"kona-ev-2022", alias:"Kona Electric 64 kWh", brand:"Hyundai", model:"Kona Electric 64 kWh", year:"2022", usableKwh:"64", ratedConsumption:"14.7" },
+    // Más variantes Hyundai Ioniq 5
+    
+    // Kia EV9
+    { id:"kia-ev9-light-rwd", alias:"EV9 Light RWD", brand:"Kia", model:"EV9 Light RWD", year:"2024", usableKwh:"76.1", ratedConsumption:"22.0" },
+    { id:"kia-ev9-wind-awd", alias:"EV9 Wind AWD", brand:"Kia", model:"EV9 Wind AWD", year:"2024", usableKwh:"99.8", ratedConsumption:"25.0" },
+    { id:"kia-ev9-land-awd", alias:"EV9 Land AWD", brand:"Kia", model:"EV9 Land AWD", year:"2024", usableKwh:"99.8", ratedConsumption:"26.0" },
+    { id:"kia-ev9-gtline-awd", alias:"EV9 GT-Line AWD", brand:"Kia", model:"EV9 GT-Line AWD", year:"2024", usableKwh:"99.8", ratedConsumption:"27.0" },
 
-    // Modelos Kia EV6
-    {
-      id: "kia-ev6-wind-rwd-new",
-      alias: "EV6 Wind RWD",
-      brand: "Kia",
-      model: "EV6 Wind RWD",
-      year: "2023-2024",
-      usableKwh: "72.5",
-      ratedConsumption: "16.5"
-    },
-    {
-      id: "kia-ev6-wind-awd-new",
-      alias: "EV6 Wind AWD",
-      brand: "Kia",
-      model: "EV6 Wind AWD",
-      year: "2023-2024",
-      usableKwh: "72.5",
-      ratedConsumption: "18.5"
-    },
-    {
-      id: "kia-ev6-gtline-rwd-new",
-      alias: "EV6 GT-Line RWD",
-      brand: "Kia",
-      model: "EV6 GT-Line RWD",
-      year: "2022-2024",
-      usableKwh: "72.5",
-      ratedConsumption: "17.0"
-    },
-    {
-      id: "kia-ev6-gtline-awd-new",
-      alias: "EV6 GT-Line AWD",
-      brand: "Kia",
-      model: "EV6 GT-Line AWD",
-      year: "2022-2024",
-      usableKwh: "72.5",
-      ratedConsumption: "19.0"
-    },
-    {
-      id: "kia-ev6-gt-new",
-      alias: "EV6 GT",
-      brand: "Kia",
-      model: "EV6 GT (AWD Performance)",
-      year: "2022-2024",
-      usableKwh: "74.0",
-      ratedConsumption: "21.0"
-    },
+    // Genesis GV60
+    { id:"gv60-advanced-awd", alias:"GV60 Advanced AWD", brand:"Genesis", model:"GV60 Advanced AWD", year:"2023-2024", usableKwh:"77.4", ratedConsumption:"20.5" },
+    { id:"gv60-performance-awd", alias:"GV60 Performance AWD", brand:"Genesis", model:"GV60 Performance AWD", year:"2023-2024", usableKwh:"77.4", ratedConsumption:"22.0" },
+
+
+
+    // Kia EV6
+    { id:"kia-ev6-wind", alias:"EV6 Wind RWD", brand:"Kia", model:"EV6 Wind RWD", year:"2023-2024", usableKwh:"72.5", ratedConsumption:"16.5" },
+    { id:"kia-ev6-wind-awd", alias:"EV6 Wind AWD", brand:"Kia", model:"EV6 Wind AWD", year:"2023-2024", usableKwh:"72.5", ratedConsumption:"18.5" },
+    { id:"kia-ev6-gtline-rwd", alias:"EV6 GT-Line RWD", brand:"Kia", model:"EV6 GT-Line RWD", year:"2022-2024", usableKwh:"72.5", ratedConsumption:"17.0" },
+    { id:"kia-ev6-gtline-awd", alias:"EV6 GT-Line AWD", brand:"Kia", model:"EV6 GT-Line AWD", year:"2022-2024", usableKwh:"72.5", ratedConsumption:"19.0" },
+    { id:"kia-ev6-gt", alias:"EV6 GT", brand:"Kia", model:"EV6 GT (AWD Performance)", year:"2022-2024", usableKwh:"74.0", ratedConsumption:"21.0" },
 
     { id:"tesla-m3lr-2023", alias:"Model 3 LR", brand:"Tesla", model:"Model 3 Long Range", year:"2023", usableKwh:"75", ratedConsumption:"15.5" },
     { id:"tesla-my-2023", alias:"Model Y LR", brand:"Tesla", model:"Model Y Long Range", year:"2023", usableKwh:"75", ratedConsumption:"16.9" },
@@ -1031,65 +733,41 @@ function seedDefaultVehicles() {
     { id:"lucid-gt-2022", alias:"Lucid Air GT", brand:"Lucid", model:"Air Grand Touring", year:"2022-2024", usableKwh:"118", ratedConsumption:"18.0" }
   ];
 
-  // Verificar IDs únicos
   const ids = new Set();
-  const uniqueDefaults = [];
-  
   defaults.forEach(vehicle => {
-    if (!ids.has(vehicle.id)) {
-      ids.add(vehicle.id);
-      uniqueDefaults.push(vehicle);
-    } else {
-      console.warn(`ID duplicado omitido: ${vehicle.id} - ${vehicle.alias}`);
+    if (ids.has(vehicle.id)) {
+      console.warn("ID duplicado encontrado:", vehicle.id);
+      vehicle.id = vehicle.id + "-" + Date.now();
     }
+    ids.add(vehicle.id);
   });
 
-  // Solo asignar si no hay vehículos existentes
-  state.vehicles = uniqueDefaults;
-  uniqueDefaults.forEach(v => {
-    if (!state.chargesByVehicle[v.id]) {
-      state.chargesByVehicle[v.id] = [];
-    }
-  });
-  
-  if (!state.activeVehicleId && uniqueDefaults.length > 0) {
-    state.activeVehicleId = uniqueDefaults[0].id;
-  }
+  state.vehicles = defaults;
+  defaults.forEach(v => { state.chargesByVehicle[v.id] = []; });
+  state.activeVehicleId = defaults[0].id;
 }
 
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const data = JSON.parse(raw);
-      state = Object.assign(state, data);
-      
-      // Migrar datos antiguos si es necesario
-      Object.keys(state.chargesByVehicle || {}).forEach(id => {
-        state.chargesByVehicle[id] = (state.chargesByVehicle[id] || []).map(c => {
-          if (typeof c.kmBase === "number") return c;
-          const km = typeof c.km === "number" ? c.km : 0;
-          return Object.assign({}, c, { kmBase: km });
-        });
-      });
+    if (!raw) {
+      seedDefaultVehicles();
+      return;
     }
-    
-    // Siempre llamar a seedDefaultVehicles para asegurar que haya vehículos
-    seedDefaultVehicles();
-    
-  } catch(e) { 
-    console.warn("Error loading state:", e);
-    // En caso de error, asegurarse de que hay vehículos
-    seedDefaultVehicles();
-  }
+    const data = JSON.parse(raw);
+    state = Object.assign(state, data);
+    Object.keys(state.chargesByVehicle || {}).forEach(id => {
+      state.chargesByVehicle[id] = (state.chargesByVehicle[id] || []).map(c => {
+        if (typeof c.kmBase === "number") return c;
+        const km = typeof c.km === "number" ? c.km : 0;
+        return Object.assign({}, c, { kmBase: km });
+      });
+    });
+  } catch(e) { console.warn("Error loading state:", e); }
 }
 
 function saveState() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch(e) {
-    console.error("Error saving state:", e);
-  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
 function getActiveVehicle() {
@@ -1119,53 +797,54 @@ function costPer100kmToUnit(v) {
 // ------- I18N --------
 const i18n = {
   es: {
-    app_name: "EV SOLUTION",
-    subtitle: "Smart EV Analytics",
-    splash_tip: "Inicializando sistemas...",
+    app_name: "EV Logbook",
+    subtitle: "Kairos Edition",
+    splash_tip: "Cargando datos de batería…",
     tab_dashboard: "Dashboard",
     tab_charges: "Cargas",
     tab_vehicle: "Vehículo",
-    summary_title: "Resumen del Sistema",
+    summary_title: "Resumen",
     range_label: "Autonomía estimada",
     cons_label_km: "Consumo medio (kWh/100 km)",
     cons_label_mi: "Consumo medio (kWh/100 mi)",
     cost_label_km: "Costo / 100 km",
     cost_label_mi: "Costo / 100 mi",
     charges_label: "Cargas registradas",
-    battery_title: "Estado de Batería",
+    battery_title: "Batería / SOH",
     soh_label: "SOH estimado:",
     deg_label: "Degradación:",
     soh_hint: "Basado en consumo real vs. dato de fábrica. Es solo una estimación aproximada.",
-    last_charge_title: "Última Carga",
+    last_charge_title: "Última carga",
     last_charge_empty: "Crea un vehículo y registra tu primera carga.",
-    chart_title: "Análisis de Consumo",
+    chart_title: "Historial visual",
     chart_hint_km: "Consumo (kWh/100 km) de las últimas cargas del vehículo seleccionado.",
     chart_hint_mi: "Consumo (kWh/100 mi) de las últimas cargas del vehículo seleccionado.",
-    new_charge_title: "Nueva Carga",
-    save_charge_btn: "Guardar Carga",
-    soc_start_label: "% Inicio de Carga",
-    soc_end_label: "% Final de Carga",
-    kwh_label: "Energía Entregada (kWh)",
-    cost_total_label: "Costo Total",
-    distance_label_km: "Distancia Recorrida (km)",
-    distance_label_mi: "Distancia Recorrida (mi)",
+    new_charge_title: "Nueva carga",
+    save_charge_btn: "Guardar carga",
+    soc_start_label: "% inicio",
+    soc_end_label: "% final",
+    kwh_label: "kWh entregados",
+    cost_total_label: "Costo total",
+    distance_label_km: "Distancia desde la última carga (km)",
+    distance_label_mi: "Distancia desde la última carga (mi)",
     notes_label: "Notas (opcional)",
     notes_placeholder: "EA, clima frío, autopista, etc.",
-    history_title: "Historial de Cargas",
-    vehicle_data_title: "Datos del Vehículo",
+    provider_label: "Proveedor de carga",
+    history_title: "Historial de cargas",
+    vehicle_data_title: "Datos del vehículo",
     alias_label: "Nombre / Alias",
     brand_label: "Marca",
     model_label: "Modelo",
     year_label: "Año",
-    usable_label: "Capacidad Útil (kWh)",
-    rated_label_km: "Consumo Oficial (kWh/100 km)",
-    rated_label_mi: "Consumo Oficial (kWh/100 mi)",
-    save_vehicle_btn: "Guardar Vehículo",
-    new_vehicle_btn: "Nuevo Vehículo",
-    delete_vehicle_btn: "Eliminar Vehículo",
-    backup_title: "Copia de Seguridad",
+    usable_label: "Capacidad usable (kWh)",
+    rated_label_km: "Consumo de ficha (kWh/100 km)",
+    rated_label_mi: "Consumo de ficha (kWh/100 mi)",
+    save_vehicle_btn: "Guardar vehículo",
+    new_vehicle_btn: "Nuevo vehículo",
+    delete_vehicle_btn: "Eliminar vehículo",
+    backup_title: "Copias de seguridad",
     backup_hint: "Exporta un archivo JSON y guárdalo en la nube. Para restaurar, selecciónalo nuevamente aquí.",
-    export_backup_btn: "Exportar Backup (JSON)",
+    export_backup_btn: "Exportar backup (JSON)",
     hint_no_vehicle: "Crea tu primer vehículo para empezar a registrar.",
     hint_no_charges: "Aún no hay cargas guardadas para este vehículo.",
     hint_create_vehicle_first: "Primero crea un vehículo en la pestaña 'Vehículo'.",
@@ -1184,53 +863,54 @@ const i18n = {
     alert_min_charge: "La carga debe ser de al menos 5% para ser significativa."
   },
   en: {
-    app_name: "EV SOLUTION",
-    subtitle: "Smart EV Analytics",
-    splash_tip: "Initializing systems...",
+    app_name: "EV Logbook",
+    subtitle: "Kairos Edition",
+    splash_tip: "Loading battery data…",
     tab_dashboard: "Dashboard",
     tab_charges: "Charges",
     tab_vehicle: "Vehicle",
-    summary_title: "System Summary",
+    summary_title: "Summary",
     range_label: "Estimated range",
     cons_label_km: "Average consumption (kWh/100 km)",
     cons_label_mi: "Average consumption (kWh/100 mi)",
     cost_label_km: "Cost / 100 km",
     cost_label_mi: "Cost / 100 mi",
     charges_label: "Logged charges",
-    battery_title: "Battery Status",
+    battery_title: "Battery / SOH",
     soh_label: "Estimated SOH:",
     deg_label: "Degradation:",
     soh_hint: "Based on real consumption vs rated value. Only an approximate estimate.",
-    last_charge_title: "Last Charge",
+    last_charge_title: "Last charge",
     last_charge_empty: "Create a vehicle and log your first charge.",
-    chart_title: "Consumption Analysis",
+    chart_title: "Visual history",
     chart_hint_km: "Consumption (kWh/100 km) for the last charges of the selected vehicle.",
     chart_hint_mi: "Consumption (kWh/100 mi) for the last charges of the selected vehicle.",
-    new_charge_title: "New Charge",
-    save_charge_btn: "Save Charge",
-    soc_start_label: "% Start Charge",
-    soc_end_label: "% End Charge",
-    kwh_label: "Delivered Energy (kWh)",
-    cost_total_label: "Total Cost",
-    distance_label_km: "Distance Traveled (km)",
-    distance_label_mi: "Distance Traveled (mi)",
+    new_charge_title: "New charge",
+    save_charge_btn: "Save charge",
+    soc_start_label: "% start",
+    soc_end_label: "% end",
+    kwh_label: "Delivered kWh",
+    cost_total_label: "Total cost",
+    distance_label_km: "Distance since last charge (km)",
+    distance_label_mi: "Distance since last charge (mi)",
     notes_label: "Notes (optional)",
     notes_placeholder: "EA, cold weather, highway, etc.",
-    history_title: "Charge History",
-    vehicle_data_title: "Vehicle Data",
+    provider_label: "Charging provider",
+    history_title: "Charge history",
+    vehicle_data_title: "Vehicle data",
     alias_label: "Name / Alias",
     brand_label: "Brand",
     model_label: "Model",
     year_label: "Year",
-    usable_label: "Usable Capacity (kWh)",
-    rated_label_km: "Official Consumption (kWh/100 km)",
-    rated_label_mi: "Official Consumption (kWh/100 mi)",
-    save_vehicle_btn: "Save Vehicle",
-    new_vehicle_btn: "New Vehicle",
-    delete_vehicle_btn: "Delete Vehicle",
-    backup_title: "Backup",
+    usable_label: "Usable capacity (kWh)",
+    rated_label_km: "Rated consumption (kWh/100 km)",
+    rated_label_mi: "Rated consumption (kWh/100 mi)",
+    save_vehicle_btn: "Save vehicle",
+    new_vehicle_btn: "New vehicle",
+    delete_vehicle_btn: "Delete vehicle",
+    backup_title: "Backups",
     backup_hint: "Export a JSON file and store it safely. To restore, select it again here.",
-    export_backup_btn: "Export Backup (JSON)",
+    export_backup_btn: "Export backup (JSON)",
     hint_no_vehicle: "Create your first vehicle to start logging.",
     hint_no_charges: "No charges saved yet for this vehicle.",
     hint_create_vehicle_first: "Create a vehicle in the 'Vehicle' tab first.",
@@ -1283,16 +963,51 @@ const exportBtn = document.getElementById("exportBtn");
 const importFile = document.getElementById("importFile");
 const printBtn = document.getElementById("printBtn");
 const splashTip = document.getElementById("splashTip");
+const providerCarousel = document.getElementById("providerCarousel");
 
+// ------- SLIDER CONFIG --------
+const sliderDefs = [
+  { id:"startSoc", valueId:"startSocValue", getUnit: () => "%" },
+  { id:"endSoc", valueId:"endSocValue", getUnit: () => "%" },
+  { id:"kwh", valueId:"kwhValue", getUnit: () => " kWh" },
+  { id:"cost", valueId:"costValue", getUnit: () => " $" },
+  { id:"distance", valueId:"distanceValue", getUnit: () => " " + (state.unit === "km" ? "km" : "mi") }
+];
+
+function initSliders() {
+  sliderDefs.forEach(def => {
+    const input = document.getElementById(def.id);
+    const span = document.getElementById(def.valueId);
+    if (!input || !span) return;
+    const update = () => {
+      span.textContent = input.value + def.getUnit();
+    };
+    input.addEventListener("input", update);
+    update();
+  });
+}
+
+function updateSliderLabels() {
+  sliderDefs.forEach(def => {
+    const input = document.getElementById(def.id);
+    const span = document.getElementById(def.valueId);
+    if (!input || !span) return;
+    span.textContent = input.value + def.getUnit();
+  });
+}
+
+let selectedProvider = "EA";
+
+// ------- THEME & I18N --------
 function applyTheme(theme) {
   state.theme = theme;
   if (theme === "light") {
     document.body.classList.add("light");
-    themeToggle.textContent = "🌙";
+    themeToggle.textContent = "☀️";
     themeToggle.setAttribute("aria-label", "Switch to dark mode");
   } else {
     document.body.classList.remove("light");
-    themeToggle.textContent = "☀️";
+    themeToggle.textContent = "🌙";
     themeToggle.setAttribute("aria-label", "Switch to light mode");
   }
 }
@@ -1345,8 +1060,10 @@ function applyTranslations() {
   document.getElementById("t_backup_title").textContent = t("backup_title");
   document.getElementById("t_backup_hint").textContent = t("backup_hint");
   exportBtn.textContent = t("export_backup_btn");
+  document.getElementById("t_provider_label").textContent = t("provider_label");
 }
 
+// ------- RENDER --------
 function renderVehicleSelect() {
   vehicleSelect.innerHTML = "";
   if (!state.vehicles.length) {
@@ -1364,28 +1081,19 @@ function renderVehicleSelect() {
     opt.textContent = v.alias || (v.brand + " " + v.model) || "EV";
     vehicleSelect.appendChild(opt);
   });
-  if (!state.activeVehicleId && state.vehicles.length > 0) {
-    state.activeVehicleId = state.vehicles[0].id;
-  }
-  if (state.activeVehicleId) {
-    vehicleSelect.value = state.activeVehicleId;
-  }
+  if (!state.activeVehicleId) state.activeVehicleId = state.vehicles[0].id;
+  vehicleSelect.value = state.activeVehicleId;
 }
 
 function renderVehicleForm() {
   const v = getActiveVehicle();
-  if (v) {
-    vehicleForm.alias.value = v.alias || "";
-    vehicleForm.brand.value = v.brand || "";
-    vehicleForm.model.value = v.model || "";
-    vehicleForm.year.value = v.year || "";
-    vehicleForm.usableKwh.value = v.usableKwh || "";
-    vehicleForm.ratedConsumption.value = v.ratedConsumption || "";
-    deleteVehicleBtn.disabled = false;
-  } else {
-    vehicleForm.reset();
-    deleteVehicleBtn.disabled = true;
-  }
+  vehicleForm.alias.value = v ? (v.alias || "") : "";
+  vehicleForm.brand.value = v ? (v.brand || "") : "";
+  vehicleForm.model.value = v ? (v.model || "") : "";
+  vehicleForm.year.value = v ? (v.year || "") : "";
+  vehicleForm.usableKwh.value = v ? (v.usableKwh || "") : "";
+  vehicleForm.ratedConsumption.value = v ? (v.ratedConsumption || "") : "";
+  deleteVehicleBtn.disabled = !v;
 }
 
 function updateChargeFormAvailability() {
@@ -1596,6 +1304,7 @@ langSelect.addEventListener("change", () => {
   renderVehicleSelect();
   renderVehicleForm();
   renderChargesAndStats();
+  updateSliderLabels();
 });
 
 unitSelect.addEventListener("change", () => {
@@ -1603,6 +1312,7 @@ unitSelect.addEventListener("change", () => {
   debouncedSaveState();
   applyTranslations();
   renderChargesAndStats();
+  updateSliderLabels();
 });
 
 themeToggle.addEventListener("click", () => {
@@ -1686,98 +1396,64 @@ vehicleForm.addEventListener("submit", e => {
   alert(t("alert_vehicle_saved"));
 });
 
-// FORMULARIO DE CARGA CORREGIDO - SIN PROBLEMAS DE "PEGADO"
+// Provider carousel
+if (providerCarousel) {
+  providerCarousel.addEventListener("click", e => {
+    const btn = e.target.closest(".provider-pill");
+    if (!btn) return;
+    providerCarousel.querySelectorAll(".provider-pill").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    selectedProvider = btn.dataset.provider || "";
+  });
+}
+
 chargeForm.addEventListener("submit", e => {
   e.preventDefault();
-  debugLog("Formulario de carga enviado");
-  
-  try {
-    const v = getActiveVehicle();
-    debugLog("Vehículo activo:", v);
-    
-    if (!v) { 
-      alert(t("alert_create_vehicle_first")); 
-      return; 
-    }
+  const v = getActiveVehicle();
+  if (!v) { alert(t("alert_create_vehicle_first")); return; }
+  const startSoc = parseFloat(document.getElementById("startSoc").value);
+  const endSoc = parseFloat(document.getElementById("endSoc").value);
+  const kwh = parseFloat(document.getElementById("kwh").value);
+  const cost = parseFloat(document.getElementById("cost").value);
+  const dist = parseFloat(document.getElementById("distance").value);
+  const notesRaw = document.getElementById("notes").value.trim();
 
-    // Obtener valores con mejor manejo de errores
-    const startSocValue = document.getElementById("startSoc").value;
-    const endSocValue = document.getElementById("endSoc").value;
-    const kwhValue = document.getElementById("kwh").value;
-    const costValue = document.getElementById("cost").value;
-    const distValue = document.getElementById("distance").value;
-    const notes = document.getElementById("notes").value.trim();
-
-    // Validar que no estén vacíos
-    if (!startSocValue || !endSocValue || !kwhValue || !costValue || !distValue) {
-      alert("Por favor, completa todos los campos requeridos");
-      return;
-    }
-
-    // Convertir a números
-    const startSoc = parseFloat(startSocValue);
-    const endSoc = parseFloat(endSocValue);
-    const kwh = parseFloat(kwhValue);
-    const cost = parseFloat(costValue);
-    const dist = parseFloat(distValue);
-
-    // Validaciones
-    if (isNaN(startSoc) || isNaN(endSoc) || isNaN(kwh) || isNaN(cost) || isNaN(dist)) {
-      alert("Por favor, ingresa valores numéricos válidos");
-      return;
-    }
-
-    if (startSoc >= endSoc) {
-      alert(t("alert_soc_invalid"));
-      return;
-    }
-
-    if (endSoc - startSoc < 5) {
-      alert(t("alert_min_charge"));
-      return;
-    }
-
-    if (kwh <= 0 || cost <= 0 || dist <= 0) {
-      alert("La energía, costo y distancia deben ser mayores a 0");
-      return;
-    }
-
-    // Si pasa todas las validaciones, guardar
-    const kmBase = currentToKm(dist);
-    const vid = state.activeVehicleId;
-    if (!state.chargesByVehicle[vid]) state.chargesByVehicle[vid] = [];
-    
-    state.chargesByVehicle[vid].push({
-      date: new Date().toISOString(),
-      startSoc: startSoc,
-      endSoc: endSoc,
-      kwh: kwh,
-      cost: cost,
-      kmBase: kmBase,
-      notes: notes
-    });
-    
-    debouncedSaveState();
-    
-    // Limpiar formulario de manera segura
-    document.getElementById("startSoc").value = "";
-    document.getElementById("endSoc").value = "";
-    document.getElementById("kwh").value = "";
-    document.getElementById("cost").value = "";
-    document.getElementById("distance").value = "";
-    document.getElementById("notes").value = "";
-    
-    // Actualizar interfaz
-    renderChargesAndStats();
-    
-    // Feedback al usuario
-    alert("¡Carga guardada correctamente!");
-    debugLog("Carga guardada exitosamente");
-    
-  } catch (error) {
-    console.error("Error al guardar carga:", error);
-    alert("Error al guardar la carga: " + error.message);
+  if ([startSoc,endSoc,kwh,cost,dist].some(v => isNaN(v))) {
+    alert(t("alert_check_numbers"));
+    return;
   }
+  if (startSoc >= endSoc) {
+    alert(t("alert_soc_invalid"));
+    return;
+  }
+  if (endSoc - startSoc < 5) {
+    alert(t("alert_min_charge"));
+    return;
+  }
+
+  const kmBase = currentToKm(dist);
+  const vid = state.activeVehicleId;
+  if (!state.chargesByVehicle[vid]) state.chargesByVehicle[vid] = [];
+  const notes = selectedProvider ? `[${selectedProvider}] ${notesRaw}` : notesRaw;
+  state.chargesByVehicle[vid].push({
+    date: new Date().toISOString(),
+    startSoc,
+    endSoc,
+    kwh,
+    cost,
+    kmBase,
+    notes
+  });
+  debouncedSaveState();
+  chargeForm.reset();
+  // reset sliders to defaults
+  document.getElementById("startSoc").value = 20;
+  document.getElementById("endSoc").value = 80;
+  document.getElementById("kwh").value = 40;
+  document.getElementById("cost").value = 10;
+  document.getElementById("distance").value = 150;
+  updateSliderLabels();
+  renderChargesAndStats();
 });
 
 exportBtn.addEventListener("click", () => {
@@ -1785,7 +1461,7 @@ exportBtn.addEventListener("click", () => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "ev-solution-backup.json";
+  a.download = "ev-logbook-kairos-backup.json";
   a.click();
   URL.revokeObjectURL(url);
 });
@@ -1810,6 +1486,7 @@ importFile.addEventListener("change", e => {
       renderVehicleSelect();
       renderVehicleForm();
       renderChargesAndStats();
+      updateSliderLabels();
       alert(t("alert_backup_restored"));
     } catch(err) {
       console.error("Backup error:", err);
@@ -1821,37 +1498,6 @@ importFile.addEventListener("change", e => {
 
 printBtn.addEventListener("click", () => window.print());
 
-// ------- PARTÍCULAS DE FONDO --------
-function createParticles() {
-  const particlesContainer = document.getElementById('particles');
-  const particleCount = 50;
-  
-  for (let i = 0; i < particleCount; i++) {
-    const particle = document.createElement('div');
-    particle.classList.add('particle');
-    
-    // Posición aleatoria
-    const left = Math.random() * 100;
-    const top = Math.random() * 100;
-    
-    // Tamaño aleatorio
-    const size = Math.random() * 3 + 1;
-    
-    // Duración de animación aleatoria
-    const duration = Math.random() * 20 + 10;
-    const delay = Math.random() * 20;
-    
-    particle.style.left = `${left}%`;
-    particle.style.top = `${top}%`;
-    particle.style.width = `${size}px`;
-    particle.style.height = `${size}px`;
-    particle.style.animationDuration = `${duration}s`;
-    particle.style.animationDelay = `${delay}s`;
-    
-    particlesContainer.appendChild(particle);
-  }
-}
-
 // ------- INIT --------
 loadState();
 applyTheme(state.theme || "dark");
@@ -1861,7 +1507,8 @@ applyTranslations();
 renderVehicleSelect();
 renderVehicleForm();
 renderChargesAndStats();
-createParticles();
+initSliders();
+updateSliderLabels();
 
 // ------- SPLASH --------
 const splashEl = document.getElementById("splash");
@@ -1871,12 +1518,12 @@ setTimeout(() => {
     splashEl.classList.add("hide");
     setTimeout(() => {
       splashEl.style.display = "none";
-    }, 600);
+    }, 400);
   }
   if (appRoot) {
     appRoot.classList.add("ready");
   }
-}, 1500);
+}, 600);
 
 // ------- SERVICE WORKER --------
 if ("serviceWorker" in navigator) {
